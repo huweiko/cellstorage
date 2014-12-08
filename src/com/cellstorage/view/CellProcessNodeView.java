@@ -21,49 +21,52 @@ public class CellProcessNodeView extends LinearLayout{
 	private TextView mTextViewRight;
 	
 	private final int [] NodeStatus = {R.drawable.done,R.drawable.doing,R.drawable.willdo};
-	private final int NODE_STATUS_DONE = 0;//已经完成的流程
-	private final int NODE_STATUS_DOING = 1;//正在完成的流程
-	private final int NODE_STATUS_WILLDO = 2;//还未完成的流程
+	public static final int NODE_STATUS_DONE = 0;//已经完成的流程
+	public static final int NODE_STATUS_DOING = 1;//正在完成的流程
+	public static final int NODE_STATUS_WILLDO = 2;//还未完成的流程
 	
     private final int ID_IMAGENODE = 1;//节点控件的ID
 	
-    private final static int SHOW_LEFT = 1000;
-    private final static int SHOW_RIGHT = 1001;
+    public final static int SHOW_LEFT = 1000;
+    public final static int SHOW_RIGHT = 1001;
     
 	private int mNodeStatus = 0;//节点状态
 	private int mShowTextStatus = SHOW_RIGHT;
 	
+	private String mTextContent = "";
+	
+	private Context mContext;
 	public CellProcessNodeView(Context context) {
 		super(context);
+		mContext = context;
 		// TODO Auto-generated constructor stub
-		init(context);
 	}
 	public CellProcessNodeView(Context context, AttributeSet attrs) {
 		super(context,attrs);
+		mContext = context;
 		// TODO Auto-generated constructor stub
-		init(context);
 	}
-	private void init(final Context context){
+	public void create(){
 		
 		setBackgroundResource(R.color.white);
 		setOrientation(LinearLayout.VERTICAL);
 		
-		mImageViewFlow = new ImageView(context);
+		mImageViewFlow = new ImageView(mContext);
 		LinearLayout.LayoutParams lpLl = new LinearLayout.LayoutParams(
 				LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-		lpLl.gravity = Gravity.CENTER;
+		lpLl.gravity = Gravity.CENTER_HORIZONTAL;
 		mImageViewFlow.setLayoutParams(lpLl);
 		mImageViewFlow.setBackgroundResource(R.drawable.flowarrow);
 		addView(mImageViewFlow);
 		
-		RelativeLayout rlNode = new RelativeLayout(context);
+		RelativeLayout rlNode = new RelativeLayout(mContext);
 		LayoutParams lpNodeParams = new LayoutParams(
 				LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
 		rlNode.setLayoutParams(lpNodeParams);
 		
 
 		
-		mImageViewNode = new ImageView(context);
+		mImageViewNode = new ImageView(mContext);
 		RelativeLayout.LayoutParams lpIV = new RelativeLayout.LayoutParams(
 				LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 		lpIV.addRule(RelativeLayout.CENTER_IN_PARENT,RelativeLayout.TRUE);
@@ -71,20 +74,23 @@ public class CellProcessNodeView extends LinearLayout{
 		mImageViewNode.setLayoutParams(lpIV);
 		mImageViewNode.setBackgroundResource(NodeStatus[mNodeStatus]);
 	
-		mTextViewLeft = new TextView(context);
+		mTextViewLeft = new TextView(mContext);
 		RelativeLayout.LayoutParams lpTXLeft = new RelativeLayout.LayoutParams(
 				LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 		lpTXLeft.rightMargin = 10;
 		lpTXLeft.addRule(RelativeLayout.LEFT_OF,ID_IMAGENODE);
+		lpTXLeft.addRule(RelativeLayout.CENTER_VERTICAL,RelativeLayout.TRUE);
 		mTextViewLeft.setLayoutParams(lpTXLeft);
+		mTextViewLeft.setText(getmTextContent());
 		
-		mTextViewRight = new TextView(context);
+		mTextViewRight = new TextView(mContext);
 		RelativeLayout.LayoutParams lpTXRight = new RelativeLayout.LayoutParams(
 				LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 		lpTXRight.leftMargin = 10;
 		lpTXRight.addRule(RelativeLayout.RIGHT_OF,ID_IMAGENODE);
+		lpTXRight.addRule(RelativeLayout.CENTER_VERTICAL,RelativeLayout.TRUE);
 		mTextViewRight.setLayoutParams(lpTXRight);
-		
+		mTextViewRight.setText(getmTextContent());
 		if(getmShowTextStatus() == SHOW_LEFT){
 			mTextViewRight.setVisibility(View.GONE);
 		}else if(getmShowTextStatus() == SHOW_RIGHT){
@@ -114,6 +120,18 @@ public class CellProcessNodeView extends LinearLayout{
 	 */
 	public void setmShowTextStatus(int mShowTextStatus) {
 		this.mShowTextStatus = mShowTextStatus;
+	}
+	/**
+	 * @return the mTextContent
+	 */
+	public String getmTextContent() {
+		return mTextContent;
+	}
+	/**
+	 * @param mTextContent the mTextContent to set
+	 */
+	public void setmTextContent(String mTextContent) {
+		this.mTextContent = mTextContent;
 	}
 	
 }

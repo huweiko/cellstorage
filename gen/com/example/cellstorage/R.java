@@ -45,8 +45,9 @@ public final class R {
         public static final int willdo=0x7f020004;
     }
     public static final class id {
-        public static final int ImageViewNode=0x7f070001;
-        public static final int yellow=0x7f070000;
+        public static final int ImageViewNode=0x7f070002;
+        public static final int LinearLayoutTest=0x7f070000;
+        public static final int yellow=0x7f070001;
     }
     public static final class layout {
         public static final int activity_cell_home=0x7f030000;
