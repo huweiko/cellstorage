@@ -1,5 +1,20 @@
 <resources>
 
     <string name="app_name">CellStorage</string>
-
+	<string name="usernameText">用户名</string>
+	<string name="loginText">登录</string>
+	<string name="passwordText">密码</string>
+	<string name="forgotPassword">忘记密码？</string>
+	<string name="exitAppHit">再按一次退出程序</string>
+	
+	<!--SharedPreferences Key Name  -->
+	<string name="userName">USERNAME</string>
+	<string name="passWord">PASSWORD</string>
+	<string name="userInfo">USERINFO</string>
+	<string name="isSavePwd">ISSAVEPWD</string>
+	<!--Map Key Name  -->
+	<string name="UserID">UserID</string>
+	
+	
+	
 </resources>

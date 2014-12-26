@@ -1,0 +1,76 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/black">
+    <ImageButton 
+        android:id="@+id/ImageButtonSetting"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/set"
+        android:background="@color/transparent"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:onClick="toggleMenu"/>
+    <TextView 
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" 
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="80dp"
+        android:text="细胞保存系统"
+        android:textColor="@color/white"
+        android:textSize="25sp"/>
+    <ListView
+        android:id="@+id/ListViewCell"
+        android:layout_width="match_parent"
+        android:layout_height="180dp" 
+        android:layout_marginLeft="40dp"
+        android:layout_marginRight="40dp"
+        android:background="@color/white"
+        android:layout_centerInParent="true"></ListView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/ListViewCell"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/edit_view_theme"
+        android:orientation="horizontal"
+        android:padding="10dp" >
+
+        <RelativeLayout
+            android:id="@+id/RelativeLayoutHint"
+            android:layout_width="43dp"
+            android:layout_height="wrap_content" >
+
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/transparent"
+                android:padding="10dp"
+                android:src="@drawable/mail" />
+
+            <TextView 
+                android:id="@+id/TextViewHintCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="2"
+                android:textColor="@color/white"
+                android:textSize="10sp"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:background="@drawable/button_theme_login"/>
+        </RelativeLayout>
+        <TextView 
+            android:id="@+id/TextViewHintContent"
+            android:layout_width="wrap_content"
+        	android:layout_height="wrap_content"
+        	android:layout_marginLeft="10dp"
+	        android:text="的商贩肯尼迪哥萨克公司快递费给角色旅客如果"
+	        android:textSize="20sp"
+	        android:textColor="@color/white"/>
+    </LinearLayout>
+    
+</RelativeLayout>
