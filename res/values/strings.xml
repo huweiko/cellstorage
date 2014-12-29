@@ -6,6 +6,9 @@
 	<string name="passwordText">密码</string>
 	<string name="forgotPassword">忘记密码？</string>
 	<string name="exitAppHit">再按一次退出程序</string>
+	<string name="reminderTitle">提醒</string>
+	<string name="dialog_confirm">确定</string>
+	
 	
 	<!--SharedPreferences Key Name  -->
 	<string name="userName">USERNAME</string>
@@ -14,6 +17,7 @@
 	<string name="isSavePwd">ISSAVEPWD</string>
 	<!--Map Key Name  -->
 	<string name="UserID">UserID</string>
+	<string name="ServiceType">serviceType</string>
 	
 	
 	

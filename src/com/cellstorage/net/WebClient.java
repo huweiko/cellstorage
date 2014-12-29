@@ -104,6 +104,10 @@ public class WebClient {
 				action = INTERNAL_ACTION_LOGIN;
 			}else if(mMethod.equals(Method_findProductServiceList)){
 				action = INTERNAL_ACTION_FINDPRODUCTSERVICELIST;
+			}else if(mMethod.equals(Method_findSpecimenList)){
+				action = INTERNAL_ACTION_FINDSPECIMENLIST;
+			}else if(mMethod.equals(Method_getReminds)){
+				action = INTERNAL_ACTION_GETREMINDS;
 			}
 			
 			Intent intent = new Intent(action);
@@ -162,6 +166,29 @@ public class WebClient {
     					
     				}
     				Xml="<?xml version=\"1.0\" encoding=\"UTF-8\" ?><root><userId>"+UserID+"</userId></root>";
+    				Url = URL_USERAPI;
+    			}
+    		}
+    		else if(method.equals(Method_findSpecimenList)){
+    			if(param != null)
+    			{
+    				String UserID = null;
+    				String ServiceType = null;
+    				Iterator<Entry<String, String>> it= param.entrySet().iterator();
+    				while(it.hasNext())
+    				{
+    					Entry<String, String> entry = it.next();   
+    					if(entry.getKey().equals(mContext.getString(R.string.UserID)))
+    					{
+    						UserID = entry.getValue();
+    					}
+    					else if(entry.getKey().equals(mContext.getString(R.string.ServiceType)))
+    					{
+    						ServiceType = entry.getValue();
+    					}
+    					
+    				}
+    				Xml="<?xml version=\"1.0\" encoding=\"UTF-8\" ?><root><userId>"+UserID+"</userId><serviceType>"+ServiceType+"</serviceType></root>";
     				Url = URL_USERAPI;
     			}
     		}

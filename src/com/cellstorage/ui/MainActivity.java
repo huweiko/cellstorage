@@ -18,6 +18,7 @@ import org.androidannotations.annotations.EActivity;
 import com.cellstorage.AppContext;
 import com.cellstorage.AppManager;
 import com.cellstorage.UIHealper;
+import com.cellstorage.adapter.ReminderListViewAdapter;
 import com.cellstorage.adapter.ServiceStatusListViewAdapter;
 import com.cellstorage.custom.RotateAnimation;
 import com.cellstorage.custom.RotateAnimation.InterpolatedTimeListener;
@@ -25,15 +26,20 @@ import com.cellstorage.custom.SlidingMenu;
 import com.cellstorage.net.WebClient;
 import com.cellstorage.struct.ServiceStatus;
 import com.cellstorage.struct.UserInfo;
+import com.cellstorage.struct.UserReminder;
 import com.cellstorage.utils.FastBlur;
 import com.cellstorage.utils.parseXML;
 import com.cellstorage.view.LoginView;
 import com.cellstorage.view.LoginView.LoginViewListener;
 import com.example.cellstorage.R;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.app.AlertDialog.Builder;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
@@ -41,6 +47,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewTreeObserver.OnPreDrawListener;
 import android.widget.AdapterView;
@@ -66,7 +73,12 @@ public class MainActivity extends BaseActivity implements InterpolatedTimeListen
 	
 	private List<ServiceStatus> lpAllServiceStatusList = new ArrayList<ServiceStatus>();
 	private ServiceStatusListViewAdapter mServiceStatusListViewAdapter;
+	
+	private List<UserReminder> lpAllReminder = new ArrayList<UserReminder>();
+	private ReminderListViewAdapter mReminderListViewAdapter;
+	
 	private ListView mListViewServiceStatus;
+	private ListView mListViewReminder;
 	public void toggleMenu(View view)
 	{
 		if(mMenu != null)
@@ -89,6 +101,7 @@ public class MainActivity extends BaseActivity implements InterpolatedTimeListen
 		mServiceStatusListViewAdapter = new ServiceStatusListViewAdapter(appContext, lpAllServiceStatusList, R.layout.listitem_service_status);
 		mListViewServiceStatus.setAdapter(mServiceStatusListViewAdapter);
 		mListViewServiceStatus.setOnItemClickListener(this);
+		
 		IntentFilter filter = new IntentFilter();
 		filter.addAction(WebClient.INTERNAL_ACTION_LOGIN);
 		filter.addAction(WebClient.INTERNAL_ACTION_GETREMINDS);
@@ -150,7 +163,8 @@ public class MainActivity extends BaseActivity implements InterpolatedTimeListen
 				if(resXml.equals("error")){
 					
 				}else{
-					
+					parseXML.ConserveReminder(resXml, lpAllReminder);
+					showReminderDialog();
 				}
 			}else if(intent.getAction().equals(WebClient.INTERNAL_ACTION_FINDPRODUCTSERVICELIST)){
 				
@@ -216,7 +230,8 @@ public class MainActivity extends BaseActivity implements InterpolatedTimeListen
     }
     
     //模糊处理
-    private void blur(Bitmap bkg, View view){
+    @SuppressWarnings("deprecation")
+	private void blur(Bitmap bkg, View view){
         long startMs = System.currentTimeMillis();
         float scaleFactor = 1;
         float radius = 20;//20
@@ -267,7 +282,27 @@ public class MainActivity extends BaseActivity implements InterpolatedTimeListen
 	@Override
 	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 		// TODO Auto-generated method stub
-		
+		//传入被选中的服务类型
 	}
-	
+	private void showReminderDialog(){
+		AlertDialog.Builder builder = new Builder(MainActivity.this,R.style.dialog);
+		builder.setInverseBackgroundForced(true);
+		builder.setTitle(getString(R.string.reminderTitle));
+		final LayoutInflater inflater = LayoutInflater.from(MainActivity.this);
+		View viewReminder= inflater.inflate(R.layout.view_dialog_msg_reminder, null);
+		mListViewReminder = (ListView) viewReminder.findViewById(R.id.listViewReminder);
+		mReminderListViewAdapter = new ReminderListViewAdapter(appContext, lpAllReminder, R.layout.listitem_reminder_content);
+		mListViewReminder.setAdapter(mReminderListViewAdapter);
+		mReminderListViewAdapter.notifyDataSetChanged();
+		builder.setView(viewReminder);
+		builder.setPositiveButton(R.string.dialog_confirm, new android.content.DialogInterface.OnClickListener()
+		{
+			@Override
+			public void onClick(DialogInterface dialog, int which)
+			{
+			}
+		});
+		Dialog noticeDialog = builder.create();
+		noticeDialog.show();
+	}
 }

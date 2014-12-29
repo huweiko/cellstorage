@@ -10,6 +10,7 @@ import org.xml.sax.InputSource;
 
 import com.cellstorage.struct.ServiceStatus;
 import com.cellstorage.struct.UserInfo;
+import com.cellstorage.struct.UserReminder;
 
 public class parseXML{
 	//Ω‚ŒˆXML
@@ -90,6 +91,21 @@ public class parseXML{
 			ServiceStatus n = new ServiceStatus(mType, bStatus);
 			xServiceStatusList.add(n);
 			element.removeChild("services");
+		}
+	}	
+	public static void ConserveReminder(String XMLString, List<UserReminder> xUserReminderList) 
+	{
+		Element element = StringToElement(XMLString);
+		
+		Element e = null;
+		while ((e = element.getChild("message")) != null) {
+			String mID = e.getChild("id") != null ? e.getChild("id")
+					.getValue() : "";
+			String mContent = e.getChild("content") != null ? e.getChild(
+							"content").getValue() : "";
+			UserReminder n = new UserReminder(mID, true, mContent);
+			xUserReminderList.add(n);
+			element.removeChild("message");
 		}
 	}	
 }
