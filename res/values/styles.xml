@@ -16,6 +16,10 @@
     <style name="AppTheme" parent="AppBaseTheme">
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
     </style>
+    <style name="MyCheckBox" parent="@android:style/Widget.CompoundButton.CheckBox">
+  	 	<item name="android:button">@drawable/login_activity_checkbox</item>
+  	 	<item name="android:paddingLeft">20.0dip</item>
+  	</style>
     <style name="dialog" parent="@android:style/Theme.Light">
         <item name="android:windowFrame">@null</item><!--边框-->
         <item name="android:windowIsFloating">true</item><!--是否浮现在activity之上-->

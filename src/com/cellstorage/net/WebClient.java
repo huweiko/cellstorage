@@ -32,6 +32,8 @@ public class WebClient {
 	public static final String INTERNAL_ACTION_GETREMINDS="com.refeved.monitor.net.broadcast.GETREMINDS";
 	//获取合同列表
 	public static final String INTERNAL_ACTION_FINDSPECIMENLIST="com.refeved.monitor.net.broadcast.FINDSPECIMENLIST";
+	//获取当前列表状态
+	public static final String INTERNAL_ACTION_FINDSAMPLESTAYUSINFO="com.refeved.monitor.net.broadcast.FINDSAMPLESTAYUSINFO";
 	
 	private final static WebClient mInstance = new WebClient();
 	/*
@@ -50,10 +52,12 @@ public class WebClient {
 	public static final String Method_getReminds = "getReminds";
 	//获取合同列表接口
 	public static final String Method_findSpecimenList = "findSpecimenList";
+	//获取当前样本状态
+	public static final String Method_findSampleStatusInfo = "findSampleStatusInfo";
 	/*
 	 * 请求URL
 	*/ 
-	private static String URL_USERAPI = "http://172.16.43.7:9102/cell-ws/services/userAPI"; 
+	private static String URL_USERAPI = "http://172.16.43.205:9102/cell-ws/services/userAPI"; 
 	
 	// 访问参数
 	public static final String Param_SendXml = "xml";
@@ -108,6 +112,8 @@ public class WebClient {
 				action = INTERNAL_ACTION_FINDSPECIMENLIST;
 			}else if(mMethod.equals(Method_getReminds)){
 				action = INTERNAL_ACTION_GETREMINDS;
+			}else if(mMethod.equals(Method_findSampleStatusInfo)){
+				action = INTERNAL_ACTION_FINDSAMPLESTAYUSINFO;
 			}
 			
 			Intent intent = new Intent(action);
@@ -189,6 +195,29 @@ public class WebClient {
     					
     				}
     				Xml="<?xml version=\"1.0\" encoding=\"UTF-8\" ?><root><userId>"+UserID+"</userId><serviceType>"+ServiceType+"</serviceType></root>";
+    				Url = URL_USERAPI;
+    			}
+    		}
+    		else if(method.equals(Method_findSampleStatusInfo)){
+    			if(param != null)
+    			{
+    				String ServiceID = null;
+    				String contractNo = null;
+    				Iterator<Entry<String, String>> it= param.entrySet().iterator();
+    				while(it.hasNext())
+    				{
+    					Entry<String, String> entry = it.next();   
+    					if(entry.getKey().equals(mContext.getString(R.string.ServiceID)))
+    					{
+    						ServiceID = entry.getValue();
+    					}
+    					else if(entry.getKey().equals(mContext.getString(R.string.ContractNo)))
+    					{
+    						contractNo = entry.getValue();
+    					}
+    					
+    				}
+    				Xml="<?xml version=\"1.0\" encoding=\"UTF-8\" ?><root><serviceId>"+ServiceID+"</serviceId><contractNo>"+contractNo+"</contractNo></root>";
     				Url = URL_USERAPI;
     			}
     		}

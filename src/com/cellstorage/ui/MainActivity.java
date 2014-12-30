@@ -10,9 +10,12 @@
 package com.cellstorage.ui;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 
 import com.cellstorage.AppContext;
@@ -33,6 +36,7 @@ import com.cellstorage.view.LoginView;
 import com.cellstorage.view.LoginView.LoginViewListener;
 import com.example.cellstorage.R;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -46,9 +50,13 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.WindowManager;
 import android.view.ViewTreeObserver.OnPreDrawListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -79,15 +87,50 @@ public class MainActivity extends BaseActivity implements InterpolatedTimeListen
 	
 	private ListView mListViewServiceStatus;
 	private ListView mListViewReminder;
+	
+	public final int HANDLE_LOGIN = 1;
 	public void toggleMenu(View view)
 	{
-		if(mMenu != null)
-			mMenu.toggle();
+		/*if(mMenu != null)
+			mMenu.toggle();*/
+		Intent intent = new Intent();
+		intent.setClass(this, CellMonitorActivity.class);
+		startActivity(intent);
 	}
+	public Handler mHandler=new Handler()  
+	{  
+		public void handleMessage(Message msg)  
+		{  
+			switch(msg.what)  
+			{  
+			case HANDLE_LOGIN:{
+				enableRefresh = true;
+				RotateAnimation rotateAnim = null;
+				float cX = mRelativeLayoutMain.getWidth() / 2.0f;
+				float cY = mRelativeLayoutMain.getHeight() / 2.0f;
+				rotateAnim = new RotateAnimation(cX, cY, RotateAnimation.ROTATE_DECREASE);
+				if (rotateAnim != null) {
+					rotateAnim.setInterpolatedTimeListener(MainActivity.this);
+					rotateAnim.setFillAfter(true);
+					mRelativeLayoutMain.startAnimation(rotateAnim);
+				}
+			}
+				break;  
+			default:  
+				break;            
+			}  
+			super.handleMessage(msg);  
+		}  
+	}; 
 	//初始化函数
 	@AfterViews
 	public void init(){
 		appContext = (AppContext) getApplication();
+		 //关闭自动弹出的输入法
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        //去掉信息栏
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, 
+        		WindowManager.LayoutParams.FLAG_FULLSCREEN);
         mRelativeLayoutViewLogin = (LoginView) findViewById(R.id.RelativeLayoutLogin);
         mRelativeLayoutViewHome = (RelativeLayout) findViewById(R.id.RelativeLayoutHome);
         mRelativeLayoutMain = (RelativeLayout) findViewById(R.id.RelativeLayoutMain);
@@ -101,6 +144,14 @@ public class MainActivity extends BaseActivity implements InterpolatedTimeListen
 		mServiceStatusListViewAdapter = new ServiceStatusListViewAdapter(appContext, lpAllServiceStatusList, R.layout.listitem_service_status);
 		mListViewServiceStatus.setAdapter(mServiceStatusListViewAdapter);
 		mListViewServiceStatus.setOnItemClickListener(this);
+//		mListViewServiceStatus.setOnClickListener(new OnClickListener() {
+//			
+//			@Override
+//			public void onClick(View v) {
+//				// TODO Auto-generated method stub
+//				
+//			}
+//		});
 		
 		IntentFilter filter = new IntentFilter();
 		filter.addAction(WebClient.INTERNAL_ACTION_LOGIN);
@@ -143,6 +194,9 @@ public class MainActivity extends BaseActivity implements InterpolatedTimeListen
 						if(m_pDialog != null)
 							m_pDialog.cancel();
 						UIHealper.DisplayToast(appContext,"用户名和密码错误！");
+						Message message = new Message();
+						message.what = HANDLE_LOGIN;
+						mHandler.sendMessage(message); 
 					}
 					else if(resXml.equals("null")){
 						if(m_pDialog != null)
@@ -157,6 +211,9 @@ public class MainActivity extends BaseActivity implements InterpolatedTimeListen
 							m_pDialog.cancel();	
 						}
 						mRelativeLayoutViewLogin.LoginFinish();
+						Message message = new Message();
+						message.what = HANDLE_LOGIN;
+						mHandler.sendMessage(message); 
 					}
 				}
 			}else if(intent.getAction().equals(WebClient.INTERNAL_ACTION_GETREMINDS)){
@@ -234,7 +291,7 @@ public class MainActivity extends BaseActivity implements InterpolatedTimeListen
 	private void blur(Bitmap bkg, View view){
         long startMs = System.currentTimeMillis();
         float scaleFactor = 1;
-        float radius = 20;//20
+        float radius = 8;//20
         Bitmap overlay = Bitmap.createBitmap((int) (view.getMeasuredWidth()), 
                 (int) (view.getMeasuredHeight()), Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(overlay);
@@ -256,22 +313,13 @@ public class MainActivity extends BaseActivity implements InterpolatedTimeListen
 		}
 		else 
 		{
-			enableRefresh = true;
-			RotateAnimation rotateAnim = null;
-			float cX = mRelativeLayoutMain.getWidth() / 2.0f;
-			float cY = mRelativeLayoutMain.getHeight() / 2.0f;
-			rotateAnim = new RotateAnimation(cX, cY, RotateAnimation.ROTATE_DECREASE);
-			if (rotateAnim != null) {
-				rotateAnim.setInterpolatedTimeListener(this);
-				rotateAnim.setFillAfter(true);
-				mRelativeLayoutMain.startAnimation(rotateAnim);
-			}
-			mMenu.setSlideEnable(true);
-/*			createDialog();
+
+//			mMenu.setSlideEnable(true);
+			createDialog();
 			WebClient client = WebClient.getInstance();
 			Map<String,String> param = new HashMap<String, String>();
-			param.put(uname, password);	
-			client.sendMessage(appContext, WebClient.Method_login, param);*/
+			param.put(username, password);	
+			client.sendMessage(appContext, WebClient.Method_login, param);
 		}
 	}
 	@Override
@@ -284,7 +332,7 @@ public class MainActivity extends BaseActivity implements InterpolatedTimeListen
 		// TODO Auto-generated method stub
 		//传入被选中的服务类型
 	}
-	private void showReminderDialog(){
+	@SuppressLint("NewApi") private void showReminderDialog(){
 		AlertDialog.Builder builder = new Builder(MainActivity.this,R.style.dialog);
 		builder.setInverseBackgroundForced(true);
 		builder.setTitle(getString(R.string.reminderTitle));
@@ -305,4 +353,5 @@ public class MainActivity extends BaseActivity implements InterpolatedTimeListen
 		Dialog noticeDialog = builder.create();
 		noticeDialog.show();
 	}
+	
 }

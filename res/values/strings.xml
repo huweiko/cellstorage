@@ -18,6 +18,8 @@
 	<!--Map Key Name  -->
 	<string name="UserID">UserID</string>
 	<string name="ServiceType">serviceType</string>
+	<string name="ServiceID">serviceID</string>
+	<string name="ContractNo">contractNo</string>
 	
 	
 	

@@ -31,7 +31,10 @@ public class CellProcessNodeView extends LinearLayout{
     public final static int SHOW_RIGHT = 1001;
     
 	private int mNodeStatus = 0;//节点状态
+	private int mNodeType = 0;//节点类型（1咨询和预约、2签订合同、3采集准备、4样本采集、5样本运输、6样本交接、7样本制备、8检测报告、9样本入库）
 	private int mShowTextStatus = SHOW_RIGHT;
+	
+	private static OnClickItemProcessNode mOnClickItemProcessNode;
 	
 	private String mTextContent = "";
 	
@@ -46,8 +49,8 @@ public class CellProcessNodeView extends LinearLayout{
 		mContext = context;
 		// TODO Auto-generated constructor stub
 	}
-	public void create(){
-		
+	public void create(int x_nodeType){
+		mNodeType = x_nodeType;
 		setBackgroundResource(R.color.white);
 		setOrientation(LinearLayout.VERTICAL);
 		
@@ -82,7 +85,14 @@ public class CellProcessNodeView extends LinearLayout{
 		lpTXLeft.addRule(RelativeLayout.CENTER_VERTICAL,RelativeLayout.TRUE);
 		mTextViewLeft.setLayoutParams(lpTXLeft);
 		mTextViewLeft.setText(getmTextContent());
-		
+		mTextViewLeft.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				mOnClickItemProcessNode.ShowNodeContent(v, mNodeType);
+			}
+		});
 		mTextViewRight = new TextView(mContext);
 		RelativeLayout.LayoutParams lpTXRight = new RelativeLayout.LayoutParams(
 				LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
@@ -91,6 +101,14 @@ public class CellProcessNodeView extends LinearLayout{
 		lpTXRight.addRule(RelativeLayout.CENTER_VERTICAL,RelativeLayout.TRUE);
 		mTextViewRight.setLayoutParams(lpTXRight);
 		mTextViewRight.setText(getmTextContent());
+		mTextViewRight.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				mOnClickItemProcessNode.ShowNodeContent(v, mNodeType);
+			}
+		});
 		if(getmShowTextStatus() == SHOW_LEFT){
 			mTextViewRight.setVisibility(View.GONE);
 		}else if(getmShowTextStatus() == SHOW_RIGHT){
@@ -133,5 +151,14 @@ public class CellProcessNodeView extends LinearLayout{
 	public void setmTextContent(String mTextContent) {
 		this.mTextContent = mTextContent;
 	}
-	
+	public static OnClickItemProcessNode getmOnClickItemProcessNode() {
+		return mOnClickItemProcessNode;
+	}
+	public static void setmOnClickItemProcessNode(
+			OnClickItemProcessNode mOnClickItemProcessNode) {
+		CellProcessNodeView.mOnClickItemProcessNode = mOnClickItemProcessNode;
+	}
+	public interface OnClickItemProcessNode{
+		public void ShowNodeContent(View v,int NodeType);
+	} 
 }
