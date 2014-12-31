@@ -23,7 +23,7 @@ public class LoginView extends RelativeLayout{
 	private SharedPreferences sp;//保存用户名和密码
 	private EditText mUserName;
 	private EditText mPassWord;
-	private CheckBox m_remPasswawrd;//记住密码选框
+	private CheckBox m_cb_autoLogin;//记住密码选框
 	private ProgressDialog m_pDialog;
 	private Button mButtonLogin;
 	private LoginViewListener mLoginViewListener;
@@ -56,18 +56,11 @@ public class LoginView extends RelativeLayout{
 		mUserName = (EditText) mLogin.findViewById(R.id.username);
 		mPassWord = (EditText) mLogin.findViewById(R.id.password);
 		mButtonLogin = (Button) mLogin.findViewById(R.id.login);
-		m_remPasswawrd = (CheckBox) mLogin.findViewById(R.id.cb_pasward);
+		m_cb_autoLogin = (CheckBox) mLogin.findViewById(R.id.cb_autoLogin);
 		sp = mContext.getSharedPreferences(mContext.getString(R.string.userInfo), Context.MODE_PRIVATE);
-		//判断记住密码多选框的状态   
-	    if(sp.getBoolean(mContext.getString(R.string.isSavePwd), true)){
-			m_remPasswawrd.setChecked(true); 
-	    	mUserName.setText(sp.getString(mContext.getString(R.string.userName), ""));  
-			mPassWord.setText(sp.getString(mContext.getString(R.string.passWord), ""));	
-	    }else{
-	    	m_remPasswawrd.setChecked(false);
-	    	mUserName.setText(sp.getString(mContext.getString(R.string.userName), ""));  
-			mPassWord.setText("");	
-	    }
+		mUserName.setText(sp.getString(mContext.getString(R.string.userName), ""));  
+		mPassWord.setText(sp.getString(mContext.getString(R.string.passWord), ""));  
+		
 	    mButtonLogin.setOnClickListener(new OnClickListener() {
 			
 			@Override
@@ -75,23 +68,22 @@ public class LoginView extends RelativeLayout{
 				// TODO Auto-generated method stub
 				String uname = mUserName.getText().toString();
 				String password = mPassWord.getText().toString();
+				mButtonLogin.setText(mContext.getString(R.string.loginingText));
 				if(mLoginViewListener != null){
 					mLoginViewListener.OnClickLogin(uname, password);
 				}
 			}
 		});
         //监听记住密码多选框按钮事件   
-        m_remPasswawrd.setOnCheckedChangeListener(new OnCheckedChangeListener() {  
+	    m_cb_autoLogin.setOnCheckedChangeListener(new OnCheckedChangeListener() {  
             public void onCheckedChanged(CompoundButton buttonView,boolean isChecked) {  
-                if (m_remPasswawrd.isChecked()) {  
+                if (m_cb_autoLogin.isChecked()) {  
                       
-                    System.out.println("记住密码已选中");  
-                    sp.edit().putBoolean(mContext.getString(R.string.isSavePwd), true).commit();  
+                    sp.edit().putBoolean(mContext.getString(R.string.isAutoLogin), true).commit();  
                       
                 }else {  
                       
-                    System.out.println("记住密码没有选中");  
-                    sp.edit().putBoolean(mContext.getString(R.string.isSavePwd), false).commit();  
+                    sp.edit().putBoolean(mContext.getString(R.string.isAutoLogin), false).commit();  
                       
                 }  
   
@@ -114,12 +106,25 @@ public class LoginView extends RelativeLayout{
 	}
 	public void setLoginViewListener(LoginViewListener l){
 		mLoginViewListener = l;
+		//判断记住密码多选框的状态   
+	    if(sp.getBoolean(mContext.getString(R.string.isAutoLogin), true)){
+	    	m_cb_autoLogin.setChecked(true); 
+			String uname = mUserName.getText().toString();
+			String password = mPassWord.getText().toString();
+			if(mLoginViewListener != null){
+				mLoginViewListener.OnClickLogin(uname, password);
+			}
+	    }
 	}
 	public interface LoginViewListener{
 		public void OnClickLogin(String username,String password);
 		public void OnSeekPassword();
 	}
-	public void LoginFinish(){
+	public void LoginSuccess(){
+		mButtonLogin.setText(mContext.getString(R.string.loginText));
 		onSaveContent();
+	}
+	public void LoginFail(){
+		mButtonLogin.setText(mContext.getString(R.string.loginText));
 	}
 }

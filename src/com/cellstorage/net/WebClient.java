@@ -58,6 +58,10 @@ public class WebClient {
 	 * 请求URL
 	*/ 
 	private static String URL_USERAPI = "http://172.16.43.205:9102/cell-ws/services/userAPI"; 
+	private static String URL_OPRATIONAPI = "http://172.16.43.205:9102/cell-ws/services/operationAPI"; 
+//	
+//	private static String URL_USERAPI = "http://172.16.43.7:9102/cell-ws/services/userAPI"; 
+//	private static String URL_OPRATIONAPI = "http://172.16.43.7:9102/cell-ws/services/operationAPI"; 
 	
 	// 访问参数
 	public static final String Param_SendXml = "xml";
@@ -153,7 +157,7 @@ public class WebClient {
                     	
                     }
                     Xml="<?xml version=\"1.0\" encoding=\"UTF-8\" ?><root><userId>"+UserID+"</userId></root>";
-                    Url = URL_USERAPI;
+                    Url = URL_OPRATIONAPI;
                 }
     		}
 			
@@ -172,7 +176,7 @@ public class WebClient {
     					
     				}
     				Xml="<?xml version=\"1.0\" encoding=\"UTF-8\" ?><root><userId>"+UserID+"</userId></root>";
-    				Url = URL_USERAPI;
+    				Url = URL_OPRATIONAPI;
     			}
     		}
     		else if(method.equals(Method_findSpecimenList)){
@@ -195,7 +199,7 @@ public class WebClient {
     					
     				}
     				Xml="<?xml version=\"1.0\" encoding=\"UTF-8\" ?><root><userId>"+UserID+"</userId><serviceType>"+ServiceType+"</serviceType></root>";
-    				Url = URL_USERAPI;
+    				Url = URL_OPRATIONAPI;
     			}
     		}
     		else if(method.equals(Method_findSampleStatusInfo)){
@@ -218,7 +222,7 @@ public class WebClient {
     					
     				}
     				Xml="<?xml version=\"1.0\" encoding=\"UTF-8\" ?><root><serviceId>"+ServiceID+"</serviceId><contractNo>"+contractNo+"</contractNo></root>";
-    				Url = URL_USERAPI;
+    				Url = URL_OPRATIONAPI;
     			}
     		}
     		

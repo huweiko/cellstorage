@@ -3,87 +3,127 @@ package com.cellstorage.struct;
 import java.util.Date;
 
 public class SampleStatusInfoTBL{
-
+	//sample_status_id
 	private int sampleStatusId;
-
+	
+	//咨询和预约时间(咨询和预约)
 	private Date applyTime;
-
+	
+	//抵达地点
 	private String arrivePlace;
-
+	
+	//抵达时样本表面温度
 	private Float arriveSurTemp;
-
+	
+	//抵达时间
 	private Date arriveTime;
-
+	
+	//采集地点
 	private String collectPlace;
-
+	
+	//采集样本量
 	private Float collectQuantity;
-
+	
+	//采集时间（样本采集）
 	private Date collectTime;
-
+	
+	//采集结论
 	private String collectVerdict;
-
+	
+	//内毒素检测
 	private String examNds;
-
+	
+	//检测结论
 	private String examVerdict;
-
+	
+	//细胞表面抗原分析检测
 	private String examXbbmky;
-
+	
+	//需氧真菌检测
 	private String examXyzj;
-
+	
+	//厌氧真菌检测
 	private String examYyzj;
-
+	
+	//支原体检测
 	private String examZyt;
-
+	
+	//冻存状态描述
 	private String freezonStatus;
-
+	
+	//冻存时间
 	private Date freezonTime;
-
+	
+	//活细胞总数(单位：10^7)
 	private Float livingcellNum;
-
+	
+	//细胞活率
 	private int livingcellRate;
-
+	
+	//传代P0状态描述
 	private String pass0Status;
-
+	
+	//传代P0时间
 	private Date pass0Time;
-
+	
+	//传代P1状态描述
 	private String pass1Status;
-
+	
+	//传代P1时间
 	private Date pass1Time;
-
+	
+	//传代P2状态描述
 	private String pass2Status;
-
+	
+	//传代P2时间
 	private Date pass2Time;
-
+	
+	//采集准备时间（采集准备）
 	private Date prepareTime;
-
+	
+	//原代培养状态描述
 	private String primaryStatus;
-
+	
+	//原代培养时间（样本制备）
 	private Date primaryTime;
-
+	
+	//report_time（检测报告）
 	private Date reportTime;
-
+	
+	//交接样本量
 	private Float sampleQuantity;
-
+	
+	//签订合同时间（签订合同）
 	private Date signedTime;
-
+	
+	//start_trans_time（样本运输）
 	private Date startTransTime;
-
+	
+	//入库启始时间（样本入库）
 	private Date storageTime;
-
+	
+	//储存温度
 	private Float storageTemp;
-
+	
+	//入库结论
 	private String storageVerdict;
-
+	
+	//交接时样本表面温度
 	private Float takeoverSurTemp;
-
+	
+	//takeover_time（样本交接）
 	private Date takeoverTime;
-
+	
+	//交接结论
 	private String takeoverVerdict;
-
+	
+	//抵达结论
 	private String transportVerdict;
-
+	
+	//包裹状态
 	private String wrapStatus;
-
+	
+	//service_id
 	private int serviceId;
 
 	public int getSampleStatusId() {

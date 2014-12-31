@@ -2,7 +2,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:background="@drawable/layout_onclick_button_on"
+    android:background="@drawable/layout_login_background"
     android:layout_centerInParent="true">
     <LinearLayout
         android:id="@+id/LinearLayoutUserName"
@@ -18,7 +18,7 @@
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:src="@drawable/pic_username"
-	        android:padding="1dp"/>
+	        android:padding="10dp"/>
         <EditText
 		    android:id="@+id/username"
 		    android:layout_width="match_parent"
@@ -44,7 +44,7 @@
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:src="@drawable/pic_password"
-	        android:padding="1dp"/>
+	        android:padding="10dp"/>
         <EditText
 	        android:id="@+id/password"
 	        android:layout_width="match_parent"
@@ -59,22 +59,22 @@
 
 
     <CheckBox
-        android:id="@+id/cb_pasward"
+        android:id="@+id/cb_autoLogin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/LinearLayoutPassword"
         android:layout_marginLeft="20dp"
 	    android:layout_marginTop="10dp"
 	    style="@style/MyCheckBox"
-        android:text="自动登录"
+        android:text="@string/auto_login"
         android:textSize="16sp"
         android:textColor="@color/white" />
     <Button
         android:id="@+id/login"
-        android:layout_width="100dp"
-        android:layout_height="40dp"
+        android:layout_width="120dp"
+        android:layout_height="50dp"
 	    android:layout_marginTop="10dp"
-	    android:layout_below="@+id/cb_pasward"
+	    android:layout_below="@+id/cb_autoLogin"
         android:layout_centerHorizontal="true"
         android:background="@drawable/button_theme_login"
         android:text="@string/loginText"
@@ -86,11 +86,11 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/cb_pasward"
-        android:layout_alignBottom="@+id/cb_pasward"
+        android:layout_alignBaseline="@+id/cb_autoLogin"
+        android:layout_alignBottom="@+id/cb_autoLogin"
         android:layout_alignRight="@+id/LinearLayoutPassword"
         android:background="@color/transparent"
-        android:text="@string/forgotPassword"
+        android:text="@string/findPassword"
         android:textColor="@color/white"
         android:textSize="16sp" />
 

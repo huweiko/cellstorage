@@ -12,7 +12,7 @@
             android:id="@+id/ImageButtonMonitorBack"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/back"
+            android:src="@drawable/back_button"
             android:layout_centerVertical="true"
             android:layout_marginLeft="10dp"
             android:background="@color/transparent"/>
@@ -40,7 +40,7 @@
             android:background="@color/transparent"
             android:layout_centerVertical="true"
             android:layout_marginRight="10dp"
-            android:src="@drawable/fresh"
+            android:src="@drawable/refresh_button"
             android:layout_alignParentRight="true"/>
     </RelativeLayout>
 	<ScrollView
@@ -95,7 +95,7 @@
 		        </LinearLayout>
 		        <TextView 
 		            android:layout_width="match_parent"
-		            android:layout_height="50dp"
+		            android:layout_height="40dp"
 		            android:background="@color/white"
 		            android:text="交接/制备/检测/冻存等"
 		            android:textColor="@color/green"
@@ -105,7 +105,7 @@
 		        <TextView
 		            android:id="@+id/TextViewMonitorQCP"
 		            android:layout_width="match_parent"
-		            android:layout_height="80dp"
+		            android:layout_height="60dp"
 		            android:background="#eaeaea"
 		            android:text="质控点"
 		            android:textColor="@color/gray"
@@ -114,7 +114,7 @@
 		            android:paddingLeft="30dp"/>
 		        <TextView 
 		            android:layout_width="match_parent"
-		            android:layout_height="50dp"
+		            android:layout_height="40dp"
 		            android:background="@color/white"
 		            android:text="样本状态:"
 		            android:textColor="@color/green"
@@ -124,7 +124,7 @@
 		        <TextView
 		            android:id="@+id/TextViewMonitorSampleStatus"
 		            android:layout_width="match_parent"
-		            android:layout_height="80dp"
+		            android:layout_height="60dp"
 		            android:background="#eaeaea"
 		            android:text="正常"
 		            android:textColor="@color/gray"
@@ -133,7 +133,7 @@
 		            android:paddingLeft="30dp"/>
 		        <TextView 
 		            android:layout_width="match_parent"
-		            android:layout_height="50dp"
+		            android:layout_height="40dp"
 		            android:background="@color/white"
 		            android:text="质控范围"
 		            android:textColor="@color/green"
@@ -143,7 +143,7 @@
 		        <TextView
 		            android:id="@+id/TextViewMonitorControlRange"
 		            android:layout_width="match_parent"
-		            android:layout_height="80dp"
+		            android:layout_height="60dp"
 		            android:background="#eaeaea"
 		            android:text=">10cm"
 		            android:textColor="@color/gray"

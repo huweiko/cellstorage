@@ -8,7 +8,7 @@ public class ServiceStatus{
 	public void setmServiceType(String mServiceType) {
 		this.mServiceType = mServiceType;
 	}
-	public boolean ismServiceStatus() {
+	public boolean getmServiceStatus() {
 		return mServiceStatus;
 	}
 	public void setmServiceStatus(boolean mServiceStatus) {

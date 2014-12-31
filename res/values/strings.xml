@@ -3,11 +3,15 @@
     <string name="app_name">CellStorage</string>
 	<string name="usernameText">用户名</string>
 	<string name="loginText">登录</string>
+	<string name="loginingText">登录中...</string>
 	<string name="passwordText">密码</string>
 	<string name="forgotPassword">忘记密码？</string>
+	<string name="findPassword">找回密码</string>
 	<string name="exitAppHit">再按一次退出程序</string>
 	<string name="reminderTitle">提醒</string>
 	<string name="dialog_confirm">确定</string>
+	<string name="auto_login">自动登录</string>
+	<string name="quit_login">退出登录</string>
 	
 	
 	<!--SharedPreferences Key Name  -->
@@ -15,6 +19,7 @@
 	<string name="passWord">PASSWORD</string>
 	<string name="userInfo">USERINFO</string>
 	<string name="isSavePwd">ISSAVEPWD</string>
+	<string name="isAutoLogin">ISAUTOLOGIN</string>
 	<!--Map Key Name  -->
 	<string name="UserID">UserID</string>
 	<string name="ServiceType">serviceType</string>

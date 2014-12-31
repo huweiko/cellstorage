@@ -71,7 +71,6 @@ public class MainActivity extends BaseActivity implements InterpolatedTimeListen
 	private RelativeLayout mRelativeLayoutLogo;
 	private AppContext appContext;
 	
-	private ProgressDialog m_pDialog;
 	private UserInfo mUserInfo;
 	
 	/** 是否切换view */
@@ -91,11 +90,20 @@ public class MainActivity extends BaseActivity implements InterpolatedTimeListen
 	public final int HANDLE_LOGIN = 1;
 	public void toggleMenu(View view)
 	{
-		/*if(mMenu != null)
-			mMenu.toggle();*/
-		Intent intent = new Intent();
-		intent.setClass(this, CellMonitorActivity.class);
-		startActivity(intent);
+		if(mMenu != null)
+			mMenu.toggle();
+
+	}
+	@Click(R.id.ButtonQuitLogin)
+	public void OnClickQuitLogin(){
+		mRelativeLayoutViewLogin.setVisibility(View.VISIBLE);
+		mRelativeLayoutViewHome.setVisibility(View.INVISIBLE);
+		
+		if(mMenu != null){
+			mMenu.toggle();
+		}
+			
+		mMenu.setSlideEnable(false);
 	}
 	public Handler mHandler=new Handler()  
 	{  
@@ -104,7 +112,7 @@ public class MainActivity extends BaseActivity implements InterpolatedTimeListen
 			switch(msg.what)  
 			{  
 			case HANDLE_LOGIN:{
-				enableRefresh = true;
+	/*			enableRefresh = true;
 				RotateAnimation rotateAnim = null;
 				float cX = mRelativeLayoutMain.getWidth() / 2.0f;
 				float cY = mRelativeLayoutMain.getHeight() / 2.0f;
@@ -113,7 +121,11 @@ public class MainActivity extends BaseActivity implements InterpolatedTimeListen
 					rotateAnim.setInterpolatedTimeListener(MainActivity.this);
 					rotateAnim.setFillAfter(true);
 					mRelativeLayoutMain.startAnimation(rotateAnim);
-				}
+				}*/
+				mRelativeLayoutViewLogin.setVisibility(View.INVISIBLE);
+				mRelativeLayoutViewHome.setVisibility(View.VISIBLE);
+				updateProductServiceList();
+				updateGetReminds();
 			}
 				break;  
 			default:  
@@ -160,7 +172,7 @@ public class MainActivity extends BaseActivity implements InterpolatedTimeListen
 		appContext.registerReceiver(receiver, filter);
         appBlur();
 	}
-	private void createDialog() {
+/*	private void createDialog() {
 		//创建ProgressDialog对象
 		m_pDialog = new ProgressDialog(this,R.style.dialog);
 
@@ -175,7 +187,7 @@ public class MainActivity extends BaseActivity implements InterpolatedTimeListen
 
 		// 让ProgressDialog显示
 		m_pDialog.show();
-	}  
+	}  */
 
 
 	private final BroadcastReceiver receiver = new BroadcastReceiver() {
@@ -191,26 +203,18 @@ public class MainActivity extends BaseActivity implements InterpolatedTimeListen
 				{
 					if(resXml.equals("error"))
 					{
-						if(m_pDialog != null)
-							m_pDialog.cancel();
 						UIHealper.DisplayToast(appContext,"用户名和密码错误！");
-						Message message = new Message();
-						message.what = HANDLE_LOGIN;
-						mHandler.sendMessage(message); 
+						mRelativeLayoutViewLogin.LoginFail();
 					}
 					else if(resXml.equals("null")){
-						if(m_pDialog != null)
-							m_pDialog.cancel();
 						UIHealper.DisplayToast(appContext,"登陆失败，请检查网络是否连通！");
+						mRelativeLayoutViewLogin.LoginFail();
 					}
 					else
 					{	
 						mUserInfo = UserInfo.getAppManager();
 						parseXML.ConserveUserInfo(resXml, mUserInfo);
-						if(m_pDialog != null){
-							m_pDialog.cancel();	
-						}
-						mRelativeLayoutViewLogin.LoginFinish();
+						mRelativeLayoutViewLogin.LoginSuccess();
 						Message message = new Message();
 						message.what = HANDLE_LOGIN;
 						mHandler.sendMessage(message); 
@@ -220,8 +224,13 @@ public class MainActivity extends BaseActivity implements InterpolatedTimeListen
 				if(resXml.equals("error")){
 					
 				}else{
+					lpAllReminder.clear();
 					parseXML.ConserveReminder(resXml, lpAllReminder);
-					showReminderDialog();
+					
+				/*	if(!lpAllReminder.isEmpty()){
+						showReminderDialog();
+					}*/
+					
 				}
 			}else if(intent.getAction().equals(WebClient.INTERNAL_ACTION_FINDPRODUCTSERVICELIST)){
 				
@@ -229,6 +238,7 @@ public class MainActivity extends BaseActivity implements InterpolatedTimeListen
 					
 				}else{
 					if(lpAllServiceStatusList != null){
+						lpAllServiceStatusList.clear();
 						parseXML.ConserveServiceStatus(resXml, lpAllServiceStatusList);
 						mServiceStatusListViewAdapter.setListItems(lpAllServiceStatusList);
 						mServiceStatusListViewAdapter.notifyDataSetInvalidated();
@@ -291,7 +301,7 @@ public class MainActivity extends BaseActivity implements InterpolatedTimeListen
 	private void blur(Bitmap bkg, View view){
         long startMs = System.currentTimeMillis();
         float scaleFactor = 1;
-        float radius = 8;//20
+        float radius = 15;//20
         Bitmap overlay = Bitmap.createBitmap((int) (view.getMeasuredWidth()), 
                 (int) (view.getMeasuredHeight()), Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(overlay);
@@ -314,13 +324,26 @@ public class MainActivity extends BaseActivity implements InterpolatedTimeListen
 		else 
 		{
 
-//			mMenu.setSlideEnable(true);
-			createDialog();
+			mMenu.setSlideEnable(true);
 			WebClient client = WebClient.getInstance();
 			Map<String,String> param = new HashMap<String, String>();
 			param.put(username, password);	
 			client.sendMessage(appContext, WebClient.Method_login, param);
 		}
+	}
+	//获取所有产品服务
+	private void updateProductServiceList(){
+		WebClient client = WebClient.getInstance();
+		Map<String,String> param = new HashMap<String, String>();
+		param.put(getString(R.string.UserID), mUserInfo.getUserID());	
+		client.sendMessage(appContext, WebClient.Method_findProductServiceList, param);
+	}
+	//获取消息提醒
+	private void updateGetReminds(){
+		WebClient client = WebClient.getInstance();
+		Map<String,String> param = new HashMap<String, String>();
+		param.put(getString(R.string.UserID), mUserInfo.getUserID());	
+		client.sendMessage(appContext, WebClient.Method_getReminds, param);
 	}
 	@Override
 	public void OnSeekPassword() {
@@ -331,6 +354,13 @@ public class MainActivity extends BaseActivity implements InterpolatedTimeListen
 	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 		// TODO Auto-generated method stub
 		//传入被选中的服务类型
+		if(lpAllServiceStatusList.get(arg2).getmServiceStatus()){
+			Intent intent = new Intent();
+			intent.putExtra(getString(R.string.ServiceType), lpAllServiceStatusList.get(arg2).getmServiceType());
+			intent.setClass(this, CellMonitorActivity_.class);
+			startActivity(intent);
+		}
+
 	}
 	@SuppressLint("NewApi") private void showReminderDialog(){
 		AlertDialog.Builder builder = new Builder(MainActivity.this,R.style.dialog);

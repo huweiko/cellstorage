@@ -3,9 +3,9 @@
     android:id="@+id/id_menu"
     android:layout_width="wrap_content"
     android:layout_height="fill_parent"
-    android:background="@drawable/bg"
+    android:background="#3a8c44"
     android:scrollbars="none"
-    zhy:rightPadding="100dp">
+    zhy:rightPadding="150dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -27,9 +27,9 @@
 			    <com.cellstorage.view.LoginView 
 			        android:id="@+id/RelativeLayoutLogin"
 			        android:layout_centerHorizontal="true"
-			        android:layout_marginTop="230dp"
-			        android:layout_width="270dp"
-			        android:layout_height="270dp"/>
+			        android:layout_marginTop="300dp"
+			        android:layout_width="300dp"
+			        android:layout_height="300dp"/>
 			        
 		    	<include 
 		    	    android:id="@+id/RelativeLayoutHome"
