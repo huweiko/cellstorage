@@ -347,7 +347,7 @@ public class parseXML{
 		while ((e = element.getChild("message")) != null) {
 			String mID = e.getAttributeValue("id") != null ? e.getAttributeValue("id") : "";
 			String mContent = e.getAttributeValue("content") != null ? e.getAttributeValue("content") : "";
-			UserReminder n = new UserReminder(mID, true, mContent);
+			UserReminder n = new UserReminder(mID, 1, mContent);
 			xUserReminderList.add(n);
 			element.removeChild("message");
 		}

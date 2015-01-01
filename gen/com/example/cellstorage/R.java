@@ -35,6 +35,11 @@ containing a value of this type.
         public static final int half_transparent=0x7f040015;
         public static final int lemonyellow=0x7f040010;
         public static final int lightblue=0x7f040013;
+        public static final int node_blue=0x7f040019;
+        public static final int node_cyan=0x7f04001c;
+        public static final int node_purple=0x7f04001d;
+        public static final int node_red=0x7f04001b;
+        public static final int node_yellow=0x7f04001a;
         public static final int orange=0x7f04000f;
         public static final int pink=0x7f04000e;
         public static final int purple=0x7f04000d;
@@ -112,43 +117,46 @@ containing a value of this type.
         public static final int ysxb=0x7f02003d;
     }
     public static final class id {
-        public static final int ButtonQuitLogin=0x7f070017;
+        public static final int ButtonQuitLogin=0x7f070019;
         public static final int ImageButtonMonitorBack=0x7f070000;
         public static final int ImageButtonMonitorFresh=0x7f070003;
-        public static final int ImageButtonSetting=0x7f070020;
-        public static final int LinearLayoutPassword=0x7f07001c;
-        public static final int LinearLayoutSettingList=0x7f070011;
-        public static final int LinearLayoutTest=0x7f07000a;
-        public static final int LinearLayoutUserName=0x7f07001a;
-        public static final int ListViewCell=0x7f070021;
-        public static final int RelativeLayoutHint=0x7f070023;
-        public static final int RelativeLayoutHome=0x7f07000f;
-        public static final int RelativeLayoutLogin=0x7f07000e;
-        public static final int RelativeLayoutLogo=0x7f07000c;
-        public static final int RelativeLayoutMain=0x7f07000d;
-        public static final int RelativeLayoutSettingTitle=0x7f070010;
-        public static final int TextViewHintContent=0x7f070025;
-        public static final int TextViewHintCount=0x7f070024;
-        public static final int TextViewHintTitle=0x7f070022;
+        public static final int ImageButtonReminder=0x7f070026;
+        public static final int ImageButtonSetting=0x7f070022;
+        public static final int ImageViewArrow=0x7f07000b;
+        public static final int ImageViewSamepleBackgound=0x7f070005;
+        public static final int LinearLayoutPassword=0x7f07001e;
+        public static final int LinearLayoutSettingList=0x7f070013;
+        public static final int LinearLayoutTest=0x7f07000c;
+        public static final int LinearLayoutUserName=0x7f07001c;
+        public static final int ListViewCell=0x7f070023;
+        public static final int RelativeLayoutHint=0x7f070025;
+        public static final int RelativeLayoutHome=0x7f070011;
+        public static final int RelativeLayoutLogin=0x7f070010;
+        public static final int RelativeLayoutLogo=0x7f07000e;
+        public static final int RelativeLayoutMain=0x7f07000f;
+        public static final int RelativeLayoutSettingTitle=0x7f070012;
+        public static final int TextViewHintContent=0x7f070028;
+        public static final int TextViewHintCount=0x7f070027;
+        public static final int TextViewHintTitle=0x7f070024;
         public static final int TextViewMonitorAddress=0x7f070001;
-        public static final int TextViewMonitorContractNum=0x7f070005;
-        public static final int TextViewMonitorControlRange=0x7f070009;
-        public static final int TextViewMonitorQCP=0x7f070007;
-        public static final int TextViewMonitorSampleStatus=0x7f070008;
+        public static final int TextViewMonitorContractNum=0x7f070006;
+        public static final int TextViewMonitorControlRange=0x7f07000a;
+        public static final int TextViewMonitorQCP=0x7f070008;
+        public static final int TextViewMonitorSampleStatus=0x7f070009;
         public static final int TextViewMonitorTime=0x7f070002;
-        public static final int TextViewMonitorUpdateTime=0x7f070006;
-        public static final int TextViewServiceType=0x7f070018;
-        public static final int cb_autoLogin=0x7f07001e;
-        public static final int five=0x7f070016;
-        public static final int four=0x7f070015;
-        public static final int id_menu=0x7f07000b;
-        public static final int listViewReminder=0x7f070019;
-        public static final int login=0x7f07001f;
-        public static final int one=0x7f070012;
-        public static final int password=0x7f07001d;
-        public static final int three=0x7f070014;
-        public static final int two=0x7f070013;
-        public static final int username=0x7f07001b;
+        public static final int TextViewMonitorUpdateTime=0x7f070007;
+        public static final int TextViewServiceType=0x7f07001a;
+        public static final int cb_autoLogin=0x7f070020;
+        public static final int five=0x7f070018;
+        public static final int four=0x7f070017;
+        public static final int id_menu=0x7f07000d;
+        public static final int listViewReminder=0x7f07001b;
+        public static final int login=0x7f070021;
+        public static final int one=0x7f070014;
+        public static final int password=0x7f07001f;
+        public static final int three=0x7f070016;
+        public static final int two=0x7f070015;
+        public static final int username=0x7f07001d;
         public static final int yellow=0x7f070004;
     }
     public static final class layout {
@@ -163,30 +171,31 @@ containing a value of this type.
         public static final int view_main=0x7f030008;
     }
     public static final class string {
-        public static final int ContractNo=0x7f050014;
-        public static final int ServiceID=0x7f050013;
-        public static final int ServiceType=0x7f050012;
+        public static final int ContractNo=0x7f050015;
+        public static final int ServiceID=0x7f050014;
+        public static final int ServiceType=0x7f050013;
         /** Map Key Name  
          */
-        public static final int UserID=0x7f050011;
+        public static final int UserID=0x7f050012;
         public static final int app_name=0x7f050000;
-        public static final int auto_login=0x7f05000a;
-        public static final int dialog_confirm=0x7f050009;
+        public static final int auto_login=0x7f05000b;
+        public static final int dialog_confirm=0x7f05000a;
         public static final int exitAppHit=0x7f050007;
         public static final int findPassword=0x7f050006;
         public static final int forgotPassword=0x7f050005;
-        public static final int isAutoLogin=0x7f050010;
-        public static final int isSavePwd=0x7f05000f;
+        public static final int isAutoLogin=0x7f050011;
+        public static final int isSavePwd=0x7f050010;
         public static final int loginText=0x7f050002;
         public static final int loginingText=0x7f050003;
-        public static final int passWord=0x7f05000d;
+        public static final int not_reminder=0x7f050009;
+        public static final int passWord=0x7f05000e;
         public static final int passwordText=0x7f050004;
-        public static final int quit_login=0x7f05000b;
+        public static final int quit_login=0x7f05000c;
         public static final int reminderTitle=0x7f050008;
-        public static final int userInfo=0x7f05000e;
+        public static final int userInfo=0x7f05000f;
         /** SharedPreferences Key Name  
          */
-        public static final int userName=0x7f05000c;
+        public static final int userName=0x7f05000d;
         public static final int usernameText=0x7f050001;
     }
     public static final class style {
@@ -206,7 +215,7 @@ containing a value of this type.
          */
         public static final int AppTheme=0x7f060001;
         public static final int MyCheckBox=0x7f060002;
-        /** 模糊
+        /** 背景透明
          */
         public static final int dialog=0x7f060003;
     }

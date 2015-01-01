@@ -9,6 +9,7 @@
 	<string name="findPassword">找回密码</string>
 	<string name="exitAppHit">再按一次退出程序</string>
 	<string name="reminderTitle">提醒</string>
+	<string name="not_reminder">没有提醒</string>
 	<string name="dialog_confirm">确定</string>
 	<string name="auto_login">自动登录</string>
 	<string name="quit_login">退出登录</string>

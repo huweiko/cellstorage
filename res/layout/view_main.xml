@@ -54,6 +54,7 @@
                 android:layout_toLeftOf="@+id/TextViewHintTitle">
 
                 <ImageButton
+                    android:id="@+id/ImageButtonReminder"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@color/transparent"
@@ -67,9 +68,9 @@
                     android:layout_alignParentRight="true"
                     android:layout_alignParentTop="true"
                     android:background="@drawable/button_theme_login"
-                    android:text="2"
                     android:textColor="@color/white"
-                    android:textSize="10sp" />
+                    android:textSize="10sp" 
+                    android:visibility="gone"/>
             </RelativeLayout>
 
         </RelativeLayout>
@@ -78,7 +79,7 @@
             android:layout_width="wrap_content"
         	android:layout_height="wrap_content"
         	android:layout_marginLeft="10dp"
-	        android:text="的商贩肯尼迪哥萨克公司快递费给角色旅客如果"
+        	android:text="@string/not_reminder"
 	        android:textSize="20sp"
 	        android:textColor="@color/white"/>
     </LinearLayout>

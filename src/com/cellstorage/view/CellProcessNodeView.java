@@ -17,15 +17,17 @@ public class CellProcessNodeView extends LinearLayout{
 	
 	private ImageView mImageViewFlow;
 	private ImageView mImageViewNode;
-	private TextView mTextViewLeft;
-	private TextView mTextViewRight;
+	private TextView mTextViewNodeName;
+	private TextView mTextViewNodeTime;
+	private LinearLayout mLinearLayoutLeft;
+	private LinearLayout mLinearLayoutRight;
 	
-	private final int [] NodeStatus = {R.drawable.done,R.drawable.doing,R.drawable.willdo};
 	public static final int NODE_STATUS_DONE = 0;//已经完成的流程
 	public static final int NODE_STATUS_DOING = 1;//正在完成的流程
 	public static final int NODE_STATUS_WILLDO = 2;//还未完成的流程
 	
     private final int ID_IMAGENODE = 1;//节点控件的ID
+    public static int LoopNodeCount = 0;//节点计数
 	
     public final static int SHOW_LEFT = 1000;
     public final static int SHOW_RIGHT = 1001;
@@ -36,8 +38,11 @@ public class CellProcessNodeView extends LinearLayout{
 	
 	private static OnClickItemProcessNode mOnClickItemProcessNode;
 	
-	private String mTextContent = "";
+	private String mNodeTextContent = "";
+	private String mNodeTimeContent = "";
 	
+	private final int[] LoopNode = {R.drawable.dot_blue,R.drawable.dot_yellow,R.drawable.dot_red,R.drawable.dot_cyan,R.drawable.dot_purple};
+	private final int[] LoopNodeColor = {R.color.node_blue,R.color.node_yellow,R.color.node_red,R.color.node_cyan,R.color.node_purple};
 	private Context mContext;
 	public CellProcessNodeView(Context context) {
 		super(context);
@@ -52,40 +57,76 @@ public class CellProcessNodeView extends LinearLayout{
 	public void create(int x_nodeType){
 		mNodeType = x_nodeType;
 		setBackgroundResource(R.color.white);
-		setOrientation(LinearLayout.VERTICAL);
+/*		setOrientation(LinearLayout.HORIZONTAL);
+		setGravity(Gravity.CENTER);
+		LayoutParams lpppp = new LayoutParams(
+				LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+		setLayoutParams(lpppp);*/
+		LinearLayout rlNode = new LinearLayout(mContext);
+		LayoutParams lpNodeParams = new LayoutParams(
+				LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+//		rlNode.setId(ID_IMAGENODE);
+		rlNode.setLayoutParams(lpNodeParams);
+		rlNode.setOrientation(VERTICAL);
 		
+		mImageViewNode = new ImageView(mContext);
+		LinearLayout.LayoutParams lpIV = new LinearLayout.LayoutParams(
+				LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+		lpIV.gravity = Gravity.CENTER_HORIZONTAL;
+		mImageViewNode.setLayoutParams(lpIV);
+
 		mImageViewFlow = new ImageView(mContext);
 		LinearLayout.LayoutParams lpLl = new LinearLayout.LayoutParams(
 				LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 		lpLl.gravity = Gravity.CENTER_HORIZONTAL;
 		mImageViewFlow.setLayoutParams(lpLl);
-		mImageViewFlow.setBackgroundResource(R.drawable.flowarrow);
-		addView(mImageViewFlow);
+		mImageViewFlow.setBackgroundResource(R.drawable.line_gray);
 		
-		RelativeLayout rlNode = new RelativeLayout(mContext);
-		LayoutParams lpNodeParams = new LayoutParams(
+		rlNode.addView(mImageViewNode);
+		rlNode.addView(mImageViewFlow);
+		
+		mLinearLayoutLeft = new LinearLayout(mContext);
+		RelativeLayout.LayoutParams lpLiLayoutLeft = new RelativeLayout.LayoutParams(200, 100);
+//		lpLiLayoutLeft.addRule(RelativeLayout.LEFT_OF,ID_IMAGENODE);
+		mLinearLayoutLeft.setOrientation(VERTICAL);
+		mLinearLayoutLeft.setLayoutParams(lpLiLayoutLeft);
+		
+		mLinearLayoutRight = new LinearLayout(mContext);
+		RelativeLayout.LayoutParams lpLiLayoutRight = new RelativeLayout.LayoutParams(200, 100);
+//		lpLiLayoutRight.addRule(RelativeLayout.RIGHT_OF,ID_IMAGENODE);
+		mLinearLayoutRight.setOrientation(VERTICAL);
+		mLinearLayoutRight.setLayoutParams(lpLiLayoutRight);
+		
+		
+		
+		mTextViewNodeName = new TextView(mContext);
+		RelativeLayout.LayoutParams lpTXLeft = new RelativeLayout.LayoutParams(
+				LayoutParams.MATCH_PARENT, 50);
+		lpTXLeft.addRule(RelativeLayout.CENTER_VERTICAL,RelativeLayout.TRUE);
+		mTextViewNodeName.setLayoutParams(lpTXLeft);
+		mTextViewNodeName.setText(getmNodeTextContent());
+		
+		
+		mTextViewNodeTime = new TextView(mContext);
+		RelativeLayout.LayoutParams lpTXRight = new RelativeLayout.LayoutParams(
 				LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
-		rlNode.setLayoutParams(lpNodeParams);
+		lpTXRight.addRule(RelativeLayout.CENTER_VERTICAL,RelativeLayout.TRUE);
+		mTextViewNodeTime.setLayoutParams(lpTXRight);
+		mTextViewNodeTime.setText(getmNodeTimeContent());
+		mTextViewNodeTime.setTextColor(mContext.getResources().getColor(R.color.gray));
+		
+		mLinearLayoutLeft.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				mOnClickItemProcessNode.ShowNodeContent(v, mNodeType);
+			}
+		});
 		
 
 		
-		mImageViewNode = new ImageView(mContext);
-		RelativeLayout.LayoutParams lpIV = new RelativeLayout.LayoutParams(
-				LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-		lpIV.addRule(RelativeLayout.CENTER_IN_PARENT,RelativeLayout.TRUE);
-		mImageViewNode.setId(ID_IMAGENODE);
-		mImageViewNode.setLayoutParams(lpIV);
-		mImageViewNode.setBackgroundResource(NodeStatus[mNodeStatus]);
-	
-		mTextViewLeft = new TextView(mContext);
-		RelativeLayout.LayoutParams lpTXLeft = new RelativeLayout.LayoutParams(
-				LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-		lpTXLeft.rightMargin = 10;
-		lpTXLeft.addRule(RelativeLayout.LEFT_OF,ID_IMAGENODE);
-		lpTXLeft.addRule(RelativeLayout.CENTER_VERTICAL,RelativeLayout.TRUE);
-		mTextViewLeft.setLayoutParams(lpTXLeft);
-		mTextViewLeft.setText(getmTextContent());
-		mTextViewLeft.setOnClickListener(new OnClickListener() {
+		mLinearLayoutRight.setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
@@ -93,33 +134,36 @@ public class CellProcessNodeView extends LinearLayout{
 				mOnClickItemProcessNode.ShowNodeContent(v, mNodeType);
 			}
 		});
-		mTextViewRight = new TextView(mContext);
-		RelativeLayout.LayoutParams lpTXRight = new RelativeLayout.LayoutParams(
-				LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-		lpTXRight.leftMargin = 10;
-		lpTXRight.addRule(RelativeLayout.RIGHT_OF,ID_IMAGENODE);
-		lpTXRight.addRule(RelativeLayout.CENTER_VERTICAL,RelativeLayout.TRUE);
-		mTextViewRight.setLayoutParams(lpTXRight);
-		mTextViewRight.setText(getmTextContent());
-		mTextViewRight.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				mOnClickItemProcessNode.ShowNodeContent(v, mNodeType);
-			}
-		});
+		
+		
 		if(getmShowTextStatus() == SHOW_LEFT){
-			mTextViewRight.setVisibility(View.GONE);
+			mLinearLayoutLeft.addView(mTextViewNodeName);
+			mLinearLayoutLeft.addView(mTextViewNodeTime);
+			mLinearLayoutRight.setVisibility(View.INVISIBLE);
+			mTextViewNodeName.setGravity(Gravity.CENTER);
+			mTextViewNodeTime.setGravity(Gravity.CENTER);
+			mLinearLayoutLeft.setPadding(0, 0, 10, 0);
 		}else if(getmShowTextStatus() == SHOW_RIGHT){
-			mTextViewLeft.setVisibility(View.GONE);
+			mLinearLayoutRight.addView(mTextViewNodeName);
+			mLinearLayoutRight.addView(mTextViewNodeTime);
+			mLinearLayoutRight.setPadding(10, 0, 0, 0);
+			mLinearLayoutLeft.setVisibility(View.INVISIBLE);
+			mTextViewNodeName.setGravity(Gravity.CENTER);
+			mTextViewNodeTime.setGravity(Gravity.CENTER);
 		}
-		rlNode.addView(mTextViewLeft);
-		rlNode.addView(mTextViewRight);
-		rlNode.addView(mImageViewNode);
-		
+		if(mNodeStatus == NODE_STATUS_DONE){
+			mTextViewNodeName.setTextColor(mContext.getResources().getColor(R.color.white));
+			mImageViewNode.setBackgroundResource(LoopNode[LoopNodeCount]);
+			mTextViewNodeName.setBackgroundColor(mContext.getResources().getColor(LoopNodeColor[LoopNodeCount]));
+			LoopNodeCount++;
+		}else{
+			mTextViewNodeName.setTextColor(mContext.getResources().getColor(R.color.gray));
+			mImageViewNode.setBackgroundResource(R.drawable.dot_gray);
+			mTextViewNodeName.setBackgroundColor(mContext.getResources().getColor(R.color.transparent));
+		}
+		addView(mLinearLayoutLeft);
 		addView(rlNode);
-		
+		addView(mLinearLayoutRight);
 	}
 	public int getmNodeStatus() {
 		return mNodeStatus;
@@ -139,24 +183,24 @@ public class CellProcessNodeView extends LinearLayout{
 	public void setmShowTextStatus(int mShowTextStatus) {
 		this.mShowTextStatus = mShowTextStatus;
 	}
-	/**
-	 * @return the mTextContent
-	 */
-	public String getmTextContent() {
-		return mTextContent;
-	}
-	/**
-	 * @param mTextContent the mTextContent to set
-	 */
-	public void setmTextContent(String mTextContent) {
-		this.mTextContent = mTextContent;
-	}
 	public static OnClickItemProcessNode getmOnClickItemProcessNode() {
 		return mOnClickItemProcessNode;
 	}
 	public static void setmOnClickItemProcessNode(
 			OnClickItemProcessNode mOnClickItemProcessNode) {
 		CellProcessNodeView.mOnClickItemProcessNode = mOnClickItemProcessNode;
+	}
+	public String getmNodeTextContent() {
+		return mNodeTextContent;
+	}
+	public void setmNodeTextContent(String mNodeTextContent) {
+		this.mNodeTextContent = mNodeTextContent;
+	}
+	public String getmNodeTimeContent() {
+		return mNodeTimeContent;
+	}
+	public void setmNodeTimeContent(String mNodeTimeContent) {
+		this.mNodeTimeContent = mNodeTimeContent;
 	}
 	public interface OnClickItemProcessNode{
 		public void ShowNodeContent(View v,int NodeType);

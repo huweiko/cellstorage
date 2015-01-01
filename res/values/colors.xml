@@ -25,4 +25,13 @@
     <color name="bright_foreground_light">#ff000000</color>
     <color name="bright_foreground_light_inverse">#ffffffff</color>
     <color name="bright_foreground_light_disabled">#80000000</color>
+    
+    <color name="node_blue">#0082f1</color>
+    <color name="node_yellow">#ffb901</color>
+    <color name="node_red">#e84c3d</color>
+    <color name="node_cyan">#01ba9a</color>
+    <color name="node_purple">#915fd2</color>
+    
+    
+    
 </resources>

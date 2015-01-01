@@ -43,7 +43,7 @@ public class LoadActivity extends BaseActivity
 			 public void run()
 			 {
 				try {
-					sleep(1000);
+					sleep(10);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

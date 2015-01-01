@@ -3,4 +3,10 @@
     android:id="@+id/TextViewServiceType"
     android:layout_width="match_parent"
     android:layout_height="100dp"
-    android:background="@color/red" ></TextView>
+    android:textSize="20sp"
+    android:gravity="left"
+    android:paddingTop="25dp"
+    android:paddingBottom="25dp"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp"
+    android:background="@color/transparent" ></TextView>

@@ -17,6 +17,7 @@ import java.util.Map;
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.ViewById;
 
 import com.cellstorage.AppContext;
 import com.cellstorage.AppManager;
@@ -26,6 +27,7 @@ import com.cellstorage.adapter.ServiceStatusListViewAdapter;
 import com.cellstorage.custom.RotateAnimation;
 import com.cellstorage.custom.RotateAnimation.InterpolatedTimeListener;
 import com.cellstorage.custom.SlidingMenu;
+import com.cellstorage.db.DBtableReminderItem;
 import com.cellstorage.net.WebClient;
 import com.cellstorage.struct.ServiceStatus;
 import com.cellstorage.struct.UserInfo;
@@ -46,6 +48,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -62,6 +65,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 @EActivity(R.layout.activity_main)
 public class MainActivity extends BaseActivity implements InterpolatedTimeListener,LoginViewListener,OnItemClickListener
 {
@@ -70,6 +74,11 @@ public class MainActivity extends BaseActivity implements InterpolatedTimeListen
 	private RelativeLayout mRelativeLayoutMain;
 	private RelativeLayout mRelativeLayoutLogo;
 	private AppContext appContext;
+	
+	private DBtableReminderItem mDBtableReminderItem;
+	private Cursor myCursor;
+	private int mAllMsgCount = 0;//总消息数
+	private List<UserReminder> mUserReminderList = new ArrayList<UserReminder>();
 	
 	private UserInfo mUserInfo;
 	
@@ -88,6 +97,25 @@ public class MainActivity extends BaseActivity implements InterpolatedTimeListen
 	private ListView mListViewReminder;
 	
 	public final int HANDLE_LOGIN = 1;
+	@ViewById(R.id.TextViewHintCount)
+	public TextView mTextViewHintCount;
+	@ViewById(R.id.TextViewHintContent)
+	public TextView mTextViewHintContent;
+	private static GetReminderMsgThread mGetReminderMsgThread;
+	class GetReminderMsgThread extends Thread{
+		public void run() {
+			while(true){
+				updateGetReminds();
+				try {
+					sleep(60000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+	
 	public void toggleMenu(View view)
 	{
 		if(mMenu != null)
@@ -105,6 +133,15 @@ public class MainActivity extends BaseActivity implements InterpolatedTimeListen
 			
 		mMenu.setSlideEnable(false);
 	}
+	@Click(R.id.ImageButtonReminder)
+	public void OnClickReminder(){
+		if(mAllMsgCount > 0){
+			showReminderDialog();
+			clearNewReminder();
+		}
+
+	}
+	
 	public Handler mHandler=new Handler()  
 	{  
 		public void handleMessage(Message msg)  
@@ -125,7 +162,9 @@ public class MainActivity extends BaseActivity implements InterpolatedTimeListen
 				mRelativeLayoutViewLogin.setVisibility(View.INVISIBLE);
 				mRelativeLayoutViewHome.setVisibility(View.VISIBLE);
 				updateProductServiceList();
-				updateGetReminds();
+				selectNewReminderNum();
+				mGetReminderMsgThread = new GetReminderMsgThread();
+				mGetReminderMsgThread.start();
 			}
 				break;  
 			default:  
@@ -156,7 +195,11 @@ public class MainActivity extends BaseActivity implements InterpolatedTimeListen
 		mServiceStatusListViewAdapter = new ServiceStatusListViewAdapter(appContext, lpAllServiceStatusList, R.layout.listitem_service_status);
 		mListViewServiceStatus.setAdapter(mServiceStatusListViewAdapter);
 		mListViewServiceStatus.setOnItemClickListener(this);
-//		mListViewServiceStatus.setOnClickListener(new OnClickListener() {
+
+		mDBtableReminderItem = new DBtableReminderItem(appContext);
+		mDBtableReminderItem.createDBtable();
+		
+		//		mListViewServiceStatus.setOnClickListener(new OnClickListener() {
 //			
 //			@Override
 //			public void onClick(View v) {
@@ -226,10 +269,11 @@ public class MainActivity extends BaseActivity implements InterpolatedTimeListen
 				}else{
 					lpAllReminder.clear();
 					parseXML.ConserveReminder(resXml, lpAllReminder);
-					
-				/*	if(!lpAllReminder.isEmpty()){
-						showReminderDialog();
-					}*/
+					if(lpAllReminder.size()>0){
+						mTextViewHintContent.setText(lpAllReminder.get(0).getMsg_Content());
+						updateDB(lpAllReminder);
+						selectNewReminderNum();
+					}
 					
 				}
 			}else if(intent.getAction().equals(WebClient.INTERNAL_ACTION_FINDPRODUCTSERVICELIST)){
@@ -240,6 +284,26 @@ public class MainActivity extends BaseActivity implements InterpolatedTimeListen
 					if(lpAllServiceStatusList != null){
 						lpAllServiceStatusList.clear();
 						parseXML.ConserveServiceStatus(resXml, lpAllServiceStatusList);
+						List<ServiceStatus> L_AllServiceStatusList = new ArrayList<ServiceStatus>();
+						int k = 0;
+						int j = lpAllServiceStatusList.size()-1;
+						for(int i = 0;i<lpAllServiceStatusList.size();i++){
+							L_AllServiceStatusList.add(new ServiceStatus(null, false));
+						}
+						for(int i = 0;i<lpAllServiceStatusList.size();i++){
+							
+							if(lpAllServiceStatusList.get(i).getmServiceStatus()){
+								
+								L_AllServiceStatusList.get(k).setmServiceStatus(lpAllServiceStatusList.get(i).getmServiceStatus());
+								L_AllServiceStatusList.get(k).setmServiceType(lpAllServiceStatusList.get(i).getmServiceType());
+								k++;
+							}else{
+								L_AllServiceStatusList.get(j).setmServiceStatus(lpAllServiceStatusList.get(i).getmServiceStatus());
+								L_AllServiceStatusList.get(j).setmServiceType(lpAllServiceStatusList.get(i).getmServiceType());
+								j--;
+							}
+						}
+						lpAllServiceStatusList = L_AllServiceStatusList;
 						mServiceStatusListViewAdapter.setListItems(lpAllServiceStatusList);
 						mServiceStatusListViewAdapter.notifyDataSetInvalidated();
 					}
@@ -369,7 +433,7 @@ public class MainActivity extends BaseActivity implements InterpolatedTimeListen
 		final LayoutInflater inflater = LayoutInflater.from(MainActivity.this);
 		View viewReminder= inflater.inflate(R.layout.view_dialog_msg_reminder, null);
 		mListViewReminder = (ListView) viewReminder.findViewById(R.id.listViewReminder);
-		mReminderListViewAdapter = new ReminderListViewAdapter(appContext, lpAllReminder, R.layout.listitem_reminder_content);
+		mReminderListViewAdapter = new ReminderListViewAdapter(appContext, mUserReminderList, R.layout.listitem_reminder_content);
 		mListViewReminder.setAdapter(mReminderListViewAdapter);
 		mReminderListViewAdapter.notifyDataSetChanged();
 		builder.setView(viewReminder);
@@ -383,5 +447,111 @@ public class MainActivity extends BaseActivity implements InterpolatedTimeListen
 		Dialog noticeDialog = builder.create();
 		noticeDialog.show();
 	}
-	
+	/*更新消息提醒数据库，增加新消息，删除过期的消息*/
+	private void updateDB(List<UserReminder> x_UserReminderList){
+		if(mDBtableReminderItem == null){
+			return;
+		}
+		List<UserReminder> l_UserReminderList = new ArrayList<UserReminder>();
+		myCursor=mDBtableReminderItem.select();
+//		把从数据库中获取的数据放入数组列表
+		for(int i = 0;i < myCursor.getCount();i++){
+			myCursor.moveToPosition(i);
+			UserReminder l_UserReminder = new UserReminder(myCursor.getString(0), myCursor.getInt(1), myCursor.getString(2));
+			l_UserReminderList.add(l_UserReminder);
+		}
+		//插入新消息到数据库
+		if(x_UserReminderList.size()>0){
+			for(int i = 0;i < x_UserReminderList.size();i++){
+				if(!IsExistCurrentMsg(l_UserReminderList,x_UserReminderList.get(i))){
+					mDBtableReminderItem.insert(x_UserReminderList.get(i));
+				}
+			}
+
+		}
+		//删除过期的消息
+		if(l_UserReminderList.size() > 0){
+			for(int i = 0;i < l_UserReminderList.size();i++){
+				if(!IsExistCurrentMsg(x_UserReminderList,l_UserReminderList.get(i))){
+					mDBtableReminderItem.delete(l_UserReminderList.get(i).getMsg_Reminder_Id());
+				}
+			}
+		}
+	}
+	//判断当前数据在列表中是否存在
+	private boolean IsExistCurrentMsg(List<UserReminder> x_UserReminderList,UserReminder x_UserReminder){
+		if(x_UserReminderList == null || x_UserReminder == null){
+			return false;
+		}
+		for(int i = 0;i< x_UserReminderList.size();i++){
+			if(x_UserReminderList.get(i).getMsg_Reminder_Id().equals(x_UserReminder.getMsg_Reminder_Id())){
+				return true;
+			}
+		}
+		return false;
+	}
+	/*查询新消息个数并显示*/
+	private void selectNewReminderNum(){
+		
+		int l_NewCount = 0;
+		
+		if(mDBtableReminderItem == null){
+			mDBtableReminderItem = new DBtableReminderItem(appContext);
+			mDBtableReminderItem.createDBtable();
+		}
+		
+		myCursor=mDBtableReminderItem.select();
+		mUserReminderList.clear();
+//		把从数据库中获取的数据放入数组列表
+		for(int i = 0;i < myCursor.getCount();i++){
+			myCursor.moveToPosition(i);
+			UserReminder l_UserReminder = new UserReminder(myCursor.getString(0), myCursor.getInt(1), myCursor.getString(2));
+			mUserReminderList.add(l_UserReminder);
+		}
+		mAllMsgCount = mUserReminderList.size();
+		if(mUserReminderList.size() > 0){
+			for(int i = 0;i < mUserReminderList.size();i++){
+				if(mUserReminderList.get(i).getMsg_Is_New()==1){
+					l_NewCount++;
+				}
+			}
+		}
+		if(l_NewCount > 0){
+			mTextViewHintCount.setText(""+l_NewCount);
+			mTextViewHintCount.setVisibility(View.VISIBLE);
+			
+		}else{
+			mTextViewHintCount.setText("0");
+			mTextViewHintCount.setVisibility(View.GONE);
+		}
+		if(mAllMsgCount>0){
+			mTextViewHintContent.setText(mUserReminderList.get(0).getMsg_Content());
+		}
+	}
+	//清空新消息提醒
+	private void clearNewReminder(){
+		List<UserReminder> l_UserReminderList = new ArrayList<UserReminder>();
+		if(mDBtableReminderItem == null){
+			mDBtableReminderItem = new DBtableReminderItem(appContext);
+			mDBtableReminderItem.createDBtable();
+		}
+		
+		myCursor=mDBtableReminderItem.select();
+//		把从数据库中获取的数据放入数组列表
+		for(int i = 0;i < myCursor.getCount();i++){
+			myCursor.moveToPosition(i);
+			UserReminder l_UserReminder = new UserReminder(myCursor.getString(0), myCursor.getInt(1), myCursor.getString(2));
+			l_UserReminderList.add(l_UserReminder);
+		}
+		if(l_UserReminderList.size() > 0){
+			for(int i = 0;i < l_UserReminderList.size();i++){
+				if(l_UserReminderList.get(i).getMsg_Is_New()==1){
+					UserReminder l_UserReminder = new UserReminder(l_UserReminderList.get(i).getMsg_Reminder_Id(), 0, l_UserReminderList.get(i).getMsg_Content());	
+					mDBtableReminderItem.update(l_UserReminder, l_UserReminderList.get(i).getMsg_Reminder_Id());
+				}
+			}
+		}
+		mTextViewHintCount.setText("0");
+		mTextViewHintCount.setVisibility(View.GONE);
+	}
 }

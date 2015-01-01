@@ -73,10 +73,8 @@ public class ReminderListViewAdapter extends BaseAdapter {
 			listItemView = (ListItemView)convertView.getTag();
 		}	
 		
-		listItemView.mServiceType.setText(listItems.get(position).getMsg_Content());
-		if(!listItemView.mServiceStatus){
-			listItemView.mServiceType.setBackgroundColor(context.getResources().getColor(R.color.gray));
-		}
+		listItemView.mServiceType.setText(position+1+"."+listItems.get(position).getMsg_Content());
+		listItemView.mServiceType.setBackgroundColor(context.getResources().getColor(R.color.transparent));
 		return convertView;
 	}
 
