@@ -13,7 +13,9 @@ import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.WindowManager;
+
 import java.lang.Thread;
+
 import com.cellstorage.AppContext;
 import com.example.cellstorage.R;
 

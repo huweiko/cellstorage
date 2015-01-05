@@ -86,13 +86,13 @@ public class CellProcessNodeView extends LinearLayout{
 		rlNode.addView(mImageViewFlow);
 		
 		mLinearLayoutLeft = new LinearLayout(mContext);
-		RelativeLayout.LayoutParams lpLiLayoutLeft = new RelativeLayout.LayoutParams(200, 100);
+		RelativeLayout.LayoutParams lpLiLayoutLeft = new RelativeLayout.LayoutParams(300, 170);
 //		lpLiLayoutLeft.addRule(RelativeLayout.LEFT_OF,ID_IMAGENODE);
 		mLinearLayoutLeft.setOrientation(VERTICAL);
 		mLinearLayoutLeft.setLayoutParams(lpLiLayoutLeft);
 		
 		mLinearLayoutRight = new LinearLayout(mContext);
-		RelativeLayout.LayoutParams lpLiLayoutRight = new RelativeLayout.LayoutParams(200, 100);
+		RelativeLayout.LayoutParams lpLiLayoutRight = new RelativeLayout.LayoutParams(300, 170);
 //		lpLiLayoutRight.addRule(RelativeLayout.RIGHT_OF,ID_IMAGENODE);
 		mLinearLayoutRight.setOrientation(VERTICAL);
 		mLinearLayoutRight.setLayoutParams(lpLiLayoutRight);
@@ -101,9 +101,10 @@ public class CellProcessNodeView extends LinearLayout{
 		
 		mTextViewNodeName = new TextView(mContext);
 		RelativeLayout.LayoutParams lpTXLeft = new RelativeLayout.LayoutParams(
-				LayoutParams.MATCH_PARENT, 50);
+				LayoutParams.MATCH_PARENT, 80);
 		lpTXLeft.addRule(RelativeLayout.CENTER_VERTICAL,RelativeLayout.TRUE);
 		mTextViewNodeName.setLayoutParams(lpTXLeft);
+		mTextViewNodeName.setTextColor(mContext.getResources().getColor(R.color.white));
 		mTextViewNodeName.setText(getmNodeTextContent());
 		
 		
@@ -114,7 +115,7 @@ public class CellProcessNodeView extends LinearLayout{
 		mTextViewNodeTime.setLayoutParams(lpTXRight);
 		mTextViewNodeTime.setText(getmNodeTimeContent());
 		mTextViewNodeTime.setTextColor(mContext.getResources().getColor(R.color.gray));
-		
+		mTextViewNodeTime.setTextSize(12);
 		mLinearLayoutLeft.setOnClickListener(new OnClickListener() {
 			
 			@Override
@@ -152,14 +153,15 @@ public class CellProcessNodeView extends LinearLayout{
 			mTextViewNodeTime.setGravity(Gravity.CENTER);
 		}
 		if(mNodeStatus == NODE_STATUS_DONE){
-			mTextViewNodeName.setTextColor(mContext.getResources().getColor(R.color.white));
 			mImageViewNode.setBackgroundResource(LoopNode[LoopNodeCount]);
 			mTextViewNodeName.setBackgroundColor(mContext.getResources().getColor(LoopNodeColor[LoopNodeCount]));
 			LoopNodeCount++;
+			if(LoopNodeCount > 4){
+				LoopNodeCount = 0;
+			}
 		}else{
-			mTextViewNodeName.setTextColor(mContext.getResources().getColor(R.color.gray));
 			mImageViewNode.setBackgroundResource(R.drawable.dot_gray);
-			mTextViewNodeName.setBackgroundColor(mContext.getResources().getColor(R.color.transparent));
+			mTextViewNodeName.setBackgroundColor(mContext.getResources().getColor(R.color.gray));
 		}
 		addView(mLinearLayoutLeft);
 		addView(rlNode);

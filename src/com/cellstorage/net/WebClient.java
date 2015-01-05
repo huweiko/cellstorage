@@ -25,17 +25,17 @@ public class WebClient {
 	 * 广播action
 	 * */
 	//登录
-	public static final String INTERNAL_ACTION_LOGIN="com.refeved.monitor.net.broadcast.LOGIN";
+	public static final String INTERNAL_ACTION_LOGIN="broadcast.LOGIN";
 	//获取所有服务
-	public static final String INTERNAL_ACTION_FINDPRODUCTSERVICELIST="com.refeved.monitor.net.broadcast.FINDPRODUCTSERVICELIST";
+	public static final String INTERNAL_ACTION_FINDPRODUCTSERVICELIST="broadcast.FINDPRODUCTSERVICELIST";
 	//获取提醒
-	public static final String INTERNAL_ACTION_GETREMINDS="com.refeved.monitor.net.broadcast.GETREMINDS";
+	public static final String INTERNAL_ACTION_GETREMINDS="broadcast.GETREMINDS";
 	//获取合同列表
-	public static final String INTERNAL_ACTION_FINDSPECIMENLIST="com.refeved.monitor.net.broadcast.FINDSPECIMENLIST";
+	public static final String INTERNAL_ACTION_FINDSPECIMENLIST="broadcast.FINDSPECIMENLIST";
 	//获取当前列表状态
-	public static final String INTERNAL_ACTION_FINDSAMPLESTAYUSINFO="com.refeved.monitor.net.broadcast.FINDSAMPLESTAYUSINFO";
+	public static final String INTERNAL_ACTION_FINDSAMPLESTAYUSINFO="broadcast.FINDSAMPLESTAYUSINFO";
 	
-	private final static WebClient mInstance = new WebClient();
+	private static WebClient mInstance;
 	/*
 	 * 命名空间 
 	 */
@@ -57,8 +57,11 @@ public class WebClient {
 	/*
 	 * 请求URL
 	*/ 
-	private static String URL_USERAPI = "http://172.16.43.205:9102/cell-ws/services/userAPI"; 
-	private static String URL_OPRATIONAPI = "http://172.16.43.205:9102/cell-ws/services/operationAPI"; 
+//	private static String URL_USERAPI = "http://172.16.43.205:9102/cell-ws/services/userAPI"; 
+//	private static String URL_OPRATIONAPI = "http://172.16.43.205:9102/cell-ws/services/operationAPI"; 
+////	
+	private static String URL_USERAPI = "http://58.64.200.105:9102/cell-ws/services/userAPI"; 
+	private static String URL_OPRATIONAPI = "http://58.64.200.105:9102/cell-ws/services/operationAPI"; 
 //	
 //	private static String URL_USERAPI = "http://172.16.43.7:9102/cell-ws/services/userAPI"; 
 //	private static String URL_OPRATIONAPI = "http://172.16.43.7:9102/cell-ws/services/operationAPI"; 
@@ -74,6 +77,9 @@ public class WebClient {
 	}
 
 	public static WebClient getInstance(){
+		if(mInstance == null){
+			mInstance = new WebClient();
+		}
 		return mInstance;
 	}
 

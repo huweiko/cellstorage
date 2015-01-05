@@ -53,6 +53,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
@@ -101,7 +102,7 @@ public class MainActivity extends BaseActivity implements InterpolatedTimeListen
 	public TextView mTextViewHintCount;
 	@ViewById(R.id.TextViewHintContent)
 	public TextView mTextViewHintContent;
-	private static GetReminderMsgThread mGetReminderMsgThread;
+	private GetReminderMsgThread mGetReminderMsgThread;
 	class GetReminderMsgThread extends Thread{
 		public void run() {
 			while(true){
@@ -149,7 +150,7 @@ public class MainActivity extends BaseActivity implements InterpolatedTimeListen
 			switch(msg.what)  
 			{  
 			case HANDLE_LOGIN:{
-	/*			enableRefresh = true;
+				enableRefresh = true;
 				RotateAnimation rotateAnim = null;
 				float cX = mRelativeLayoutMain.getWidth() / 2.0f;
 				float cY = mRelativeLayoutMain.getHeight() / 2.0f;
@@ -158,9 +159,9 @@ public class MainActivity extends BaseActivity implements InterpolatedTimeListen
 					rotateAnim.setInterpolatedTimeListener(MainActivity.this);
 					rotateAnim.setFillAfter(true);
 					mRelativeLayoutMain.startAnimation(rotateAnim);
-				}*/
-				mRelativeLayoutViewLogin.setVisibility(View.INVISIBLE);
-				mRelativeLayoutViewHome.setVisibility(View.VISIBLE);
+				}
+//				mRelativeLayoutViewLogin.setVisibility(View.INVISIBLE);
+//				mRelativeLayoutViewHome.setVisibility(View.VISIBLE);
 				updateProductServiceList();
 				selectNewReminderNum();
 				mGetReminderMsgThread = new GetReminderMsgThread();
@@ -233,7 +234,7 @@ public class MainActivity extends BaseActivity implements InterpolatedTimeListen
 	}  */
 
 
-	private final BroadcastReceiver receiver = new BroadcastReceiver() {
+	public BroadcastReceiver receiver = new BroadcastReceiver() {
 		public void onReceive(Context context, Intent intent) {
 			// TODO Auto-generated method stub
 
@@ -450,7 +451,7 @@ public class MainActivity extends BaseActivity implements InterpolatedTimeListen
 	/*更新消息提醒数据库，增加新消息，删除过期的消息*/
 	private void updateDB(List<UserReminder> x_UserReminderList){
 		if(mDBtableReminderItem == null){
-			return;
+			return; 
 		}
 		List<UserReminder> l_UserReminderList = new ArrayList<UserReminder>();
 		myCursor=mDBtableReminderItem.select();

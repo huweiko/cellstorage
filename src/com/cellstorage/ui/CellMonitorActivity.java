@@ -41,9 +41,10 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
-@EActivity(R.layout.activity_cell_monitor)
-public class CellMonitorActivity extends Activity{
+@SuppressLint("SimpleDateFormat") @EActivity(R.layout.activity_cell_monitor)
+public class CellMonitorActivity extends BaseActivity{
 	private LinearLayout mLinearLayoutText;
 	private AppContext appContext;
 	private String mServiceType;
@@ -53,16 +54,21 @@ public class CellMonitorActivity extends Activity{
 	private ContractInfo mCurrentContractInfo;
 	private DecimalFormat temFormat = new DecimalFormat("00");
 	private SimpleDateFormat mYearFormat = new SimpleDateFormat("yyyy");
-	private static final String[] week= {"星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"};
-	private static final String[] mSamplePreparation = {"","原代培养|无菌","传代P0|无菌","传代P1|无菌","传代P2|无菌","冻存|无菌"};
-	private static final String[] mSampleNodeName = {"","咨询和预约","签订合同","采集准备","样本采集","样本运输","样本交接","样本制备","检测报告","样本入库"};
-	private static final String[] mSampleNodeTime = new String[10];
-	private static String mQCPoint = new String();
-	private static String mQCStutas = new String();
-	private static String mQCRange = new String();
-	private static String mSampleAddress = new String();
+	private SimpleDateFormat mMonthFormat = new SimpleDateFormat("MM");
+	private SimpleDateFormat mDateFormat = new SimpleDateFormat("dd");
+	private SimpleDateFormat mHourFormat = new SimpleDateFormat("hh");
+	private SimpleDateFormat mMinutesFormat = new SimpleDateFormat("mm");
+	private SimpleDateFormat mSecondsFormat = new SimpleDateFormat("ss");
+	private final String[] week= {"星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"};
+	private final String[] mSamplePreparation = {"","原代培养|无菌","传代P0|无菌","传代P1|无菌","传代P2|无菌","冻存|无菌"};
+	private final String[] mSampleNodeName = {"","咨询和预约","签订合同","采集准备","样本采集","样本运输","样本交接","样本制备","检测报告","样本入库"};
+	private final String[] mSampleNodeTime = new String[10];
+	private String mQCPoint;
+	private String mQCStutas;
+	private String mQCRange;
+	private String mSampleAddress;
 	//服务当前状态
-	public static int mSampleCurrentStatus = 0;
+	public int mSampleCurrentStatus = 0;
 	//返回按钮
 	@ViewById(R.id.ImageButtonMonitorBack)
 	public ImageButton mImageButtonMonitorBack;
@@ -78,6 +84,10 @@ public class CellMonitorActivity extends Activity{
 	//刷新按钮
 	@ViewById(R.id.ImageButtonMonitorFresh)
 	public ImageButton mImageButtonMonitorFresh;
+	
+	//刷新进度条
+	@ViewById(R.id.ProgressBarMonitorRefresh)
+	public ProgressBar mProgressBarMonitorRefresh;
 	
 	//合同编号
 	@ViewById(R.id.TextViewMonitorContractNum)
@@ -99,96 +109,52 @@ public class CellMonitorActivity extends Activity{
 	@ViewById(R.id.TextViewMonitorControlRange)
 	public TextView mTextViewMonitorControlRange;
 	
-	private static final int REFRESH_DATA = 1;
+	private final int REFRESH_DATA = 1;
 	private void getSampleTime(){
-		Date today = null;
+		Date []today = new Date[10];
 		String l_Year = null;
 		String l_Month = null;
 		String l_getDate = null;
 		String l_Hours = null;
 		String l_Minutes = null;
 		if(mSampleStatusInfoTBL.getStorageTime() != null){
-			today = mSampleStatusInfoTBL.getStorageTime();
-			l_Year = mYearFormat.format(today);
-			l_Month = temFormat.format(today.getMonth());
-			l_getDate = temFormat.format(today.getDate());
-			l_Hours = temFormat.format(today.getHours());
-			l_Minutes = temFormat.format(today.getMinutes());
-			mSampleNodeTime[9] = l_Year+"年 "+l_Month+"月 "+l_getDate+"日 "+l_Hours+"时 "+l_Minutes+"分";
+			today[9] = mSampleStatusInfoTBL.getStorageTime();
 		}
 		if(mSampleStatusInfoTBL.getReportTime() != null){
-			today = mSampleStatusInfoTBL.getReportTime();
-			l_Year = mYearFormat.format(today);
-			l_Month = temFormat.format(today.getMonth());
-			l_getDate = temFormat.format(today.getDate());
-			l_Hours = temFormat.format(today.getHours());
-			l_Minutes = temFormat.format(today.getMinutes());
-			mSampleNodeTime[8] = l_Year+"年 "+l_Month+"月 "+l_getDate+"日 "+l_Hours+"时 "+l_Minutes+"分";
+			today[8] = mSampleStatusInfoTBL.getReportTime();
 		}
 		if(mSampleStatusInfoTBL.getPrimaryTime() != null){
-			today = mSampleStatusInfoTBL.getPrimaryTime();
-			l_Year = mYearFormat.format(today);
-			l_Month = temFormat.format(today.getMonth());
-			l_getDate = temFormat.format(today.getDate());
-			l_Hours = temFormat.format(today.getHours());
-			l_Minutes = temFormat.format(today.getMinutes());
-			mSampleNodeTime[7] = l_Year+"年 "+l_Month+"月 "+l_getDate+"日 "+l_Hours+"时 "+l_Minutes+"分";
+			today[7] = mSampleStatusInfoTBL.getPrimaryTime();
 		}
 		if(mSampleStatusInfoTBL.getTakeoverTime() != null){
-			today = mSampleStatusInfoTBL.getTakeoverTime();
-			l_Year = mYearFormat.format(today);
-			l_Month = temFormat.format(today.getMonth());
-			l_getDate = temFormat.format(today.getDate());
-			l_Hours = temFormat.format(today.getHours());
-			l_Minutes = temFormat.format(today.getMinutes());
-			mSampleNodeTime[6] = l_Year+"年 "+l_Month+"月 "+l_getDate+"日 "+l_Hours+"时 "+l_Minutes+"分";
+			today[6] = mSampleStatusInfoTBL.getTakeoverTime();
 		}
 		if(mSampleStatusInfoTBL.getStartTransTime() != null){
-			today = mSampleStatusInfoTBL.getStartTransTime();
-			l_Year = mYearFormat.format(today);
-			l_Month = temFormat.format(today.getMonth());
-			l_getDate = temFormat.format(today.getDate());
-			l_Hours = temFormat.format(today.getHours());
-			l_Minutes = temFormat.format(today.getMinutes());
-			mSampleNodeTime[5] = l_Year+"年 "+l_Month+"月 "+l_getDate+"日 "+l_Hours+"时 "+l_Minutes+"分";
+			today[5] = mSampleStatusInfoTBL.getStartTransTime();
 		}
 		if(mSampleStatusInfoTBL.getCollectTime() != null){
-			today = mSampleStatusInfoTBL.getCollectTime();
-			l_Year = mYearFormat.format(today);
-			l_Month = temFormat.format(today.getMonth());
-			l_getDate = temFormat.format(today.getDate());
-			l_Hours = temFormat.format(today.getHours());
-			l_Minutes = temFormat.format(today.getMinutes());
-			mSampleNodeTime[4] = l_Year+"年 "+l_Month+"月 "+l_getDate+"日 "+l_Hours+"时 "+l_Minutes+"分";
+			today[4] = mSampleStatusInfoTBL.getCollectTime();
 		}
 		if(mSampleStatusInfoTBL.getPrepareTime() != null){
-			today = mSampleStatusInfoTBL.getPrepareTime();
-			l_Year = mYearFormat.format(today);
-			l_Month = temFormat.format(today.getMonth());
-			l_getDate = temFormat.format(today.getDate());
-			l_Hours = temFormat.format(today.getHours());
-			l_Minutes = temFormat.format(today.getMinutes());
-			mSampleNodeTime[3] = l_Year+"年 "+l_Month+"月 "+l_getDate+"日 "+l_Hours+"时 "+l_Minutes+"分";
+			today[3] = mSampleStatusInfoTBL.getPrepareTime();
 		}
 		if(mSampleStatusInfoTBL.getSignedTime() != null){
-			today = mSampleStatusInfoTBL.getSignedTime();
-			l_Year = mYearFormat.format(today);
-			l_Month = temFormat.format(today.getMonth());
-			l_getDate = temFormat.format(today.getDate());
-			l_Hours = temFormat.format(today.getHours());
-			l_Minutes = temFormat.format(today.getMinutes());
-			mSampleNodeTime[2] = l_Year+"年 "+l_Month+"月 "+l_getDate+"日 "+l_Hours+"时 "+l_Minutes+"分";
+			today[2] = mSampleStatusInfoTBL.getSignedTime();
 		}
 		if(mSampleStatusInfoTBL.getApplyTime() != null){
-			today = mSampleStatusInfoTBL.getApplyTime();
-			l_Year = mYearFormat.format(today);
-			l_Month = temFormat.format(today.getMonth());
-			l_getDate = temFormat.format(today.getDate());
-			l_Hours = temFormat.format(today.getHours());
-			l_Minutes = temFormat.format(today.getMinutes());
-			mSampleNodeTime[1] = l_Year+"年 "+l_Month+"月 "+l_getDate+"日 "+l_Hours+"时 "+l_Minutes+"分";
+			today[1] = mSampleStatusInfoTBL.getApplyTime();
 		}
-		
+		for(int i = 9;i > 0;i-- ){
+			if(today[i] != null){
+				l_Year = mYearFormat.format(today[i]);
+				l_Month = mMonthFormat.format(today[i]);
+				l_getDate = mDateFormat.format(today[i]);
+				l_Hours = mHourFormat.format(today[i]);
+				l_Minutes = mMinutesFormat.format(today[i]);
+				mSampleNodeTime[i] = l_Year+"年 "+l_Month+"月 "+l_getDate+"日 "+l_Hours+"时 "+l_Minutes+"分";
+			}
+
+		}
 	}
 	private int getSamplePreparationStatus(){
 		int l_SamplePreparationStatus = 0;
@@ -233,39 +199,67 @@ public class CellMonitorActivity extends Activity{
 		}
 		else if(l_QCStatus == 4){
 			Float l_CollectQuantity = mSampleStatusInfoTBL.getCollectQuantity();
-			mQCPoint = l_CollectQuantity+"cm";
-			if(l_CollectQuantity >= 15){
-				mQCStutas = "正常";
-			}else{
+			if(l_CollectQuantity == null){
+				mQCPoint = "无";
 				mQCStutas = "异常";
+				mQCRange = "≥15cm|无菌";
+			}else{
+				mQCPoint = l_CollectQuantity+"cm";
+				if(l_CollectQuantity >= 15){
+					mQCStutas = "正常";
+				}else{
+					mQCStutas = "异常";
+				}
+						
+				mQCRange = "≥15cm|无菌";
 			}
-					
-			mQCRange = "≥15cm|无菌";
-			mSampleAddress = mSampleStatusInfoTBL.getCollectPlace();
+			if(mSampleStatusInfoTBL.getCollectPlace() == null){
+				mSampleAddress = "无";
+			}else{
+				mSampleAddress = mSampleStatusInfoTBL.getCollectPlace();
+			}
+			
 		}
 		else if(l_QCStatus == 5){
 			Float l_ArriveSurTemp = mSampleStatusInfoTBL.getArriveSurTemp();
-			mQCPoint = l_ArriveSurTemp+"℃";
-			if(l_ArriveSurTemp>=4 && l_ArriveSurTemp <= 10){
-				mQCStutas = "正常";
-			}else{
+			if(l_ArriveSurTemp == null){
+				mQCPoint = "无";
 				mQCStutas = "异常";
+				mQCRange = "4~10℃|≤24h";
+			}else{
+				mQCPoint = l_ArriveSurTemp+"℃";
+				if(l_ArriveSurTemp>=4 && l_ArriveSurTemp <= 10){
+					mQCStutas = "正常";
+				}else{
+					mQCStutas = "异常";
+				}
+				
+				mQCRange = "4~10℃|≤24h";
 			}
 			
-			mQCRange = "4~10℃|≤24h";
 			mSampleAddress = mSampleStatusInfoTBL.getArrivePlace();
+			if(mSampleAddress == null){
+				mSampleAddress = "无";
+			}
 		}
 		else if(l_QCStatus == 6){
 			Float l_SampleQuantity = mSampleStatusInfoTBL.getSampleQuantity();
 			Float l_TakeoverSurTemp = mSampleStatusInfoTBL.getTakeoverSurTemp();
-			mQCPoint = l_SampleQuantity+"cm|"+l_TakeoverSurTemp+"℃";
-			if(l_SampleQuantity >= 15 && l_TakeoverSurTemp >= 4 && l_TakeoverSurTemp <= 10){
-				mQCStutas = "正常";
-			}else{
+			if(l_SampleQuantity == null || l_TakeoverSurTemp == null){
+				mQCPoint = "无";
 				mQCStutas = "异常";
+				mQCRange = "≥15cm|4~10℃";
+			}else{
+				mQCPoint = l_SampleQuantity+"cm|"+l_TakeoverSurTemp+"℃";
+				if(l_SampleQuantity >= 15 && l_TakeoverSurTemp >= 4 && l_TakeoverSurTemp <= 10){
+					mQCStutas = "正常";
+				}else{
+					mQCStutas = "异常";
+				}
+				
+				mQCRange = "≥15cm|4~10℃";
 			}
-			
-			mQCRange = "≥15cm|4~10℃";
+
 		}
 		else if(l_QCStatus == 7){
 			mQCPoint = mSamplePreparation[getSamplePreparationStatus()];
@@ -279,13 +273,20 @@ public class CellMonitorActivity extends Activity{
 		}
 		else if(l_QCStatus == 9){
 			Float l_StorageTemp = mSampleStatusInfoTBL.getStorageTemp();
-			mQCPoint = l_StorageTemp+"℃";
-			if(l_StorageTemp>= -196 && l_StorageTemp <= -135){
-				mQCStutas = "正常";
-			}else{
+			if(l_StorageTemp == null){
+				mQCPoint = "无";
 				mQCStutas = "异常";
+				mQCRange = "-135℃~-196℃";
+			}else{
+				mQCPoint = l_StorageTemp+"℃";
+				if(l_StorageTemp>= -196 && l_StorageTemp <= -135){
+					mQCStutas = "正常";
+				}else{
+					mQCStutas = "异常";
+				}
+				mQCRange = "-135℃~-196℃ ";
 			}
-			mQCRange = "-135℃~-196℃  ";
+
 		}
 		else{
 			mQCPoint = "";
@@ -370,11 +371,11 @@ public class CellMonitorActivity extends Activity{
 	@UiThread
 	public void GetCurrentTimeThread(){
 		Date today = new Date();
-		String l_Month = temFormat.format(today.getMonth());
-		String l_getDate = temFormat.format(today.getDate());
+		String l_Month = mMonthFormat.format(today);
+		String l_getDate = mDateFormat.format(today);
 		String l_Day = week[today.getDay()];
-		String l_Hours = temFormat.format(today.getHours());
-		String l_Minutes = temFormat.format(today.getMinutes());
+		String l_Hours = mHourFormat.format(today);
+		String l_Minutes = mMinutesFormat.format(today);
 		mTextViewMonitorTime.setText(l_Month+"月"+l_getDate+"日 "+l_Day+" "+l_Hours+":"+l_Minutes);
 	}
    @Background
@@ -403,7 +404,6 @@ public class CellMonitorActivity extends Activity{
 			super.handleMessage(msg);  
 		}  
 	}; 
-	
 	@AfterViews
 	public void Init(){
 		appContext = (AppContext) getApplication();
@@ -436,6 +436,7 @@ public class CellMonitorActivity extends Activity{
 		filter.addAction(WebClient.INTERNAL_ACTION_FINDSPECIMENLIST);
 		filter.addAction(WebClient.INTERNAL_ACTION_FINDSAMPLESTAYUSINFO);
 		appContext.registerReceiver(receiver, filter);
+		
 		updateFindSpecimenList();
 		mLinearLayoutText = (LinearLayout) findViewById(R.id.LinearLayoutTest);
 		CellProcessNodeView.setmOnClickItemProcessNode(ShowNodeActivity);
@@ -443,13 +444,16 @@ public class CellMonitorActivity extends Activity{
 	}
 	@Click
 	public void ImageButtonMonitorBack(){
-		finish();
+		this.finish();
 	}
 	@Click
 	public void ImageButtonMonitorFresh(){
-		updateindSampleStatusInfo();
+		if(lpContractInfo.size() > 0){
+			updateindSampleStatusInfo();	
+		} 
+		
 	}
-	private final BroadcastReceiver receiver = new BroadcastReceiver() {
+	public BroadcastReceiver receiver = new BroadcastReceiver() {
 		public void onReceive(Context context, Intent intent) {
 			// TODO Auto-generated method stub
 
@@ -478,6 +482,8 @@ public class CellMonitorActivity extends Activity{
 			else if(intent.getAction().equals(WebClient.INTERNAL_ACTION_FINDSAMPLESTAYUSINFO)){
 				if(resXml != null)
 				{
+					mProgressBarMonitorRefresh.setVisibility(View.INVISIBLE);
+					mImageButtonMonitorFresh.setVisibility(View.VISIBLE);
 					if(resXml.equals("error"))
 					{
 					}
@@ -514,9 +520,18 @@ public class CellMonitorActivity extends Activity{
 	private void updateindSampleStatusInfo(){
 		WebClient client = WebClient.getInstance();
 		Map<String,String> param = new HashMap<String, String>();
+		mProgressBarMonitorRefresh.setVisibility(View.VISIBLE);
+		mImageButtonMonitorFresh.setVisibility(View.INVISIBLE);
 		mCurrentContractInfo = lpContractInfo.get(0);
 		param.put(getString(R.string.ContractNo), lpContractInfo.get(0).getContractNo());
 		param.put(getString(R.string.ServiceID), lpContractInfo.get(0).getServiceId());
 		client.sendMessage(appContext, WebClient.Method_findSampleStatusInfo, param);
+	}
+	@Override
+	protected void onDestroy() {
+		// TODO Auto-generated method stub
+		appContext.unregisterReceiver(receiver);
+		super.onDestroy();
+		
 	}
 }

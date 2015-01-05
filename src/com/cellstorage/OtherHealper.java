@@ -1,6 +1,8 @@
 package com.cellstorage;
 
 import android.annotation.SuppressLint;
+import android.util.DisplayMetrics;
+import android.util.Log;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -42,4 +44,5 @@ public final class OtherHealper{
     	}		
     	return date;	
     }
+
 }
