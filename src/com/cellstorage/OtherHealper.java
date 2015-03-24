@@ -27,6 +27,18 @@ public final class OtherHealper{
         Matcher matcher = pattern.matcher(ipAddress);
         return matcher.matches();
     }
+    /**
+     * 检测邮箱地址是否合法
+     * @param email
+     * @return true合法 false不合法
+     */
+    public static boolean isEmail(String email){
+          if (null==email || "".equals(email)) return false;  
+//        Pattern p = Pattern.compile("\\w+@(\\w+.)+[a-z]{2,3}"); //简单匹配
+          Pattern p =  Pattern.compile("\\w+([-+.]\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*");//复杂匹配
+          Matcher m = p.matcher(email);
+          return m.matches();
+    }
     /**	 * 字符串转换到时间格式	 
      ** @param dateStr 需要转换的字符串	 
      ** @param formatStr 需要格式的目标字符串  举例 yyyy-MM-dd	 

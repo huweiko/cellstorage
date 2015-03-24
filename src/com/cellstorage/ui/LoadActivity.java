@@ -45,7 +45,7 @@ public class LoadActivity extends BaseActivity
 			 public void run()
 			 {
 				try {
-					sleep(10);
+					sleep(1000);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -96,7 +96,7 @@ public class LoadActivity extends BaseActivity
 		/* 新建一个Intent对象 */
 		Intent intent = new Intent();
 		/* 指定intent要启动的类 */
-		intent.setClass(LoadActivity.this, MainActivity_.class);
+		intent.setClass(LoadActivity.this, LoginActivity_.class);
 		byte LoginStatus = 0;
 		intent.putExtra("LoginStatus", LoginStatus);
 		/* 启动一个新的Activity */

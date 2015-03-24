@@ -1,4 +1,12 @@
 eclipse.preferences.version=1
 encoding//src/com/cellstorage/custom/RotateAnimation.java=UTF-8
 encoding//src/com/cellstorage/custom/SlidingMenu.java=UTF-8
+encoding//src/com/cellstorage/struct/SampleStatusCollect.java=UTF-8
+encoding//src/com/cellstorage/struct/SampleStatusDetection.java=UTF-8
+encoding//src/com/cellstorage/struct/SampleStatusInfo.java=UTF-8
 encoding//src/com/cellstorage/struct/SampleStatusInfoTBL.java=UTF-8
+encoding//src/com/cellstorage/struct/SampleStatusPreparation.java=UTF-8
+encoding//src/com/cellstorage/struct/SampleStatusStorage.java=UTF-8
+encoding//src/com/cellstorage/struct/SampleStatusTakeover.java=UTF-8
+encoding//src/com/cellstorage/utils/ReportDownloadManager.java=UTF-8
+encoding//src/com/cellstorage/utils/UpdateManager.java=UTF-8

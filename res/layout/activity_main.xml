@@ -3,40 +3,18 @@
     android:id="@+id/id_menu"
     android:layout_width="wrap_content"
     android:layout_height="fill_parent"
-    android:background="#3a8c44"
+    android:background="@drawable/setting_background"
     android:scrollbars="none"
-    zhy:rightPadding="150dp">
+    zhy:rightPadding="100dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="fill_parent"
         android:background="@color/transparent" >
+        
 	    <include layout="@layout/layout_menu" />
-	    <RelativeLayout 
-	        android:id="@+id/RelativeLayoutLogo"
-	        android:layout_width="fill_parent"
-		    android:layout_height="fill_parent"
-		    android:background="@drawable/login_background"
-		    android:visibility="visible">
-		    <RelativeLayout 
-		        android:id="@+id/RelativeLayoutMain"
-		        android:layout_width="match_parent"
-		        android:layout_height="match_parent"
-		        android:orientation="horizontal"
-		        android:background="@color/transparent">
-			    <com.cellstorage.view.LoginView 
-			        android:id="@+id/RelativeLayoutLogin"
-			        android:layout_centerHorizontal="true"
-			        android:layout_marginTop="300dp"
-			        android:layout_width="300dp"
-			        android:layout_height="300dp"/>
-			        
-		    	<include 
-		    	    android:id="@+id/RelativeLayoutHome"
-		    	    layout="@layout/view_main"
-		    	    android:visibility="gone"/>
-			
-			</RelativeLayout>
-		</RelativeLayout>
+    	<include 
+    	    android:id="@+id/RelativeLayoutHome"
+    	    layout="@layout/view_main"/>
     </LinearLayout>
 </com.cellstorage.custom.SlidingMenu>

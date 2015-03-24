@@ -26,6 +26,7 @@ public class LoginView extends RelativeLayout{
 	private CheckBox m_cb_autoLogin;//记住密码选框
 	private ProgressDialog m_pDialog;
 	private Button mButtonLogin;
+	private Button mButtonForgetPwd;
 	private LoginViewListener mLoginViewListener;
 	
 	public LoginView(Context context) {
@@ -56,6 +57,7 @@ public class LoginView extends RelativeLayout{
 		mUserName = (EditText) mLogin.findViewById(R.id.username);
 		mPassWord = (EditText) mLogin.findViewById(R.id.password);
 		mButtonLogin = (Button) mLogin.findViewById(R.id.login);
+		mButtonForgetPwd = (Button) mLogin.findViewById(R.id.ButtonForgetPwd);
 		m_cb_autoLogin = (CheckBox) mLogin.findViewById(R.id.cb_autoLogin);
 		sp = mContext.getSharedPreferences(mContext.getString(R.string.userInfo), Context.MODE_PRIVATE);
 		mUserName.setText(sp.getString(mContext.getString(R.string.userName), ""));  
@@ -74,6 +76,16 @@ public class LoginView extends RelativeLayout{
 				}
 			}
 		});
+	    mButtonForgetPwd.setOnClickListener(new OnClickListener() {
+	    	
+	    	@Override
+	    	public void onClick(View v) {
+	    		// TODO Auto-generated method stub
+				if(mLoginViewListener != null){
+					mLoginViewListener.OnSeekPassword();
+				}
+	    	}
+	    });
         //监听记住密码多选框按钮事件   
 	    m_cb_autoLogin.setOnCheckedChangeListener(new OnCheckedChangeListener() {  
             public void onCheckedChanged(CompoundButton buttonView,boolean isChecked) {  
@@ -107,10 +119,11 @@ public class LoginView extends RelativeLayout{
 	public void setLoginViewListener(LoginViewListener l){
 		mLoginViewListener = l;
 		//判断记住密码多选框的状态   
-	    if(sp.getBoolean(mContext.getString(R.string.isAutoLogin), true)){
+	    if(sp.getBoolean(mContext.getString(R.string.isAutoLogin), false)){
 	    	m_cb_autoLogin.setChecked(true); 
 			String uname = mUserName.getText().toString();
 			String password = mPassWord.getText().toString();
+			mButtonLogin.setText(mContext.getString(R.string.loginingText));
 			if(mLoginViewListener != null){
 				mLoginViewListener.OnClickLogin(uname, password);
 			}

@@ -10,7 +10,7 @@
 	    android:layout_height="wrap_content"
 	    android:layout_marginLeft="20dp"
 	    android:layout_marginRight="20dp"
-	    android:layout_marginTop="50dp"
+	    android:layout_marginTop="@dimen/Viewlogin_marginTop"
 	    android:layout_centerHorizontal="true"
 	    android:orientation="horizontal"
 	    android:background="@drawable/edit_view_theme">
@@ -73,7 +73,7 @@
         android:id="@+id/login"
         android:layout_width="120dp"
         android:layout_height="50dp"
-	    android:layout_marginTop="10dp"
+	    android:layout_marginTop="@dimen/Viewlogin_LoginButton_marginTop"
 	    android:layout_below="@+id/cb_autoLogin"
         android:layout_centerHorizontal="true"
         android:background="@drawable/button_theme_login"
@@ -84,12 +84,13 @@
     </Button>
 
     <Button
+        android:id="@+id/ButtonForgetPwd"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/cb_autoLogin"
         android:layout_alignBottom="@+id/cb_autoLogin"
         android:layout_alignRight="@+id/LinearLayoutPassword"
-        android:background="@color/transparent"
+        android:background="@drawable/textview_onclick"
         android:text="@string/findPassword"
         android:textColor="@color/white"
         android:textSize="16sp" />

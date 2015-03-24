@@ -34,6 +34,12 @@ public class DBHelper extends SQLiteOpenHelper {
 		Cursor cursor=db.query(TABLE_NAME, null, null, null, null, null, null);
 		return cursor;
 	}
+	public Cursor selectByAttribute(String TABLE_NAME,String Attribute,String AttributeName)
+	{
+		SQLiteDatabase db=this.getReadableDatabase();
+		Cursor cursor= db.rawQuery("select * from "+TABLE_NAME+" where "+Attribute+"=?",new String[]{AttributeName});
+		return cursor;
+	}
 	
 	public long insert(String TABLE_NAME,ContentValues cv)
 	{
@@ -42,11 +48,16 @@ public class DBHelper extends SQLiteOpenHelper {
 		return row;
 	}
 	
-	public void delete(String TABLE_NAME,String MAJORKWY_NAME,String Value)
+/*	public void delete(String TABLE_NAME,String MAJORKWY_NAME,String Value)
 	{
 		SQLiteDatabase db=this.getWritableDatabase();
 		String where=MAJORKWY_NAME+"=?";
 		String[] whereValue={Value};
+		db.delete(TABLE_NAME, where, whereValue);
+	}*/
+	public void delete(String TABLE_NAME,String where,String[] whereValue)
+	{
+		SQLiteDatabase db=this.getWritableDatabase();
 		db.delete(TABLE_NAME, where, whereValue);
 	}
 	public void deleteAll(String TABLE_NAME)
@@ -67,11 +78,16 @@ public class DBHelper extends SQLiteOpenHelper {
 		db.execSQL("alter table " + TABLE_NAME + " rename to " + NewTableName + ";");
 	}
 	
-	public void update(String TABLE_NAME,String MAJORKWY_NAME,String Value,ContentValues cv)
+/*	public void update(String TABLE_NAME,String MAJORKWY_NAME,String Value,ContentValues cv)
 	{
 		SQLiteDatabase db=this.getWritableDatabase();
 		String where=MAJORKWY_NAME+"=?";
 		String[] whereValue={Value};
+		db.update(TABLE_NAME, cv, where, whereValue);
+	}*/
+	public void update(String TABLE_NAME,String where,String []whereValue,ContentValues cv)
+	{
+		SQLiteDatabase db=this.getWritableDatabase();
 		db.update(TABLE_NAME, cv, where, whereValue);
 	}
 

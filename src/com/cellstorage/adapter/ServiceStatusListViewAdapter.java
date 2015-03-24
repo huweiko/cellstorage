@@ -74,9 +74,9 @@ public class ServiceStatusListViewAdapter extends BaseAdapter {
 		
 		listItemView.mServiceType.setText(listItems.get(position).getmServiceType());
 		if(!listItems.get(position).getmServiceStatus()){
-			listItemView.mServiceType.setBackgroundColor(context.getResources().getColor(R.color.gray));
+			listItemView.mServiceType.setTextColor(context.getResources().getColor(R.color.gray));
 		}else{
-			listItemView.mServiceType.setBackgroundColor(context.getResources().getColor(R.color.green));
+			listItemView.mServiceType.setTextColor(context.getResources().getColor(R.color.white));
 		}
 		return convertView;
 	}

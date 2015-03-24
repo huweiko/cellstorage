@@ -33,12 +33,14 @@ import com.cellstorage.struct.ServiceStatus;
 import com.cellstorage.struct.UserInfo;
 import com.cellstorage.struct.UserReminder;
 import com.cellstorage.utils.FastBlur;
+import com.cellstorage.utils.UpdateManager;
 import com.cellstorage.utils.parseXML;
 import com.cellstorage.view.LoginView;
 import com.cellstorage.view.LoginView.LoginViewListener;
 import com.example.cellstorage.R;
 
 import android.annotation.SuppressLint;
+import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -53,6 +55,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -62,18 +65,17 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.WindowManager;
 import android.view.ViewTreeObserver.OnPreDrawListener;
+import android.widget.AbsListView;
+import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-@EActivity(R.layout.activity_main)
-public class MainActivity extends BaseActivity implements InterpolatedTimeListener,LoginViewListener,OnItemClickListener
+@SuppressLint("NewApi") @EActivity(R.layout.activity_main)
+public class MainActivity extends BaseActivity implements OnItemClickListener
 {
-	private RelativeLayout mRelativeLayoutViewHome ;
-	private LoginView mRelativeLayoutViewLogin;
-	private RelativeLayout mRelativeLayoutMain;
-	private RelativeLayout mRelativeLayoutLogo;
 	private AppContext appContext;
 	
 	private DBtableReminderItem mDBtableReminderItem;
@@ -97,11 +99,68 @@ public class MainActivity extends BaseActivity implements InterpolatedTimeListen
 	private ListView mListViewServiceStatus;
 	private ListView mListViewReminder;
 	
-	public final int HANDLE_LOGIN = 1;
+	private final int HANDLE_REMINDER = 1;
+	private final int HANDLE_UPDATE_VERSION = 2;
+	
+	/**版本升级**/
+	private UpdateManager manager;
+	
 	@ViewById(R.id.TextViewHintCount)
 	public TextView mTextViewHintCount;
 	@ViewById(R.id.TextViewHintContent)
 	public TextView mTextViewHintContent;
+	@ViewById(R.id.TextViewUserName)
+	TextView mTextViewUserName;
+	//版本号
+	@ViewById(R.id.TextViewCurrentVersion)
+	TextView mTextViewCurrentVersion;
+	
+	@ViewById
+	ImageView ImageViewScrollArrowUp;
+	
+	@ViewById
+	ImageView ImageViewScrollArrowDown;
+	
+	//密码管理
+	@Click(R.id.RelativeLayoutPwdManager)
+	void OnClickPwdManager(){
+		Intent intent = new Intent();
+		intent.setClass(this, UpdatePwdActivity_.class);
+		startActivity(intent);
+	}
+	
+	//更改邮箱
+	@Click(R.id.RelativeLayoutChangeMail)
+	void OnClickChangeMail(){
+		Intent intent = new Intent();
+		intent.setClass(this, UpdateMailActivity_.class);
+		startActivity(intent);
+	}
+	
+	//帮助与反馈
+	@Click(R.id.RelativeLayoutHelpFeedback)
+	void OnClickHelpFeedback(){
+		Intent intent = new Intent();
+		intent.setClass(this, HelpOrFeedbackActivity_.class);
+		startActivity(intent);
+	}
+	
+	//关于我们
+	@Click(R.id.RelativeLayoutAboutUs)
+	void OnClickAboutUs(){
+		Intent intent = new Intent();
+		intent.setClass(this, AboutUsActivity_.class);
+		startActivity(intent);
+	}
+	
+	//版本升级
+	@Click(R.id.RelativeLayoutVersionUpdate)
+	void OnClickVersionUpdate(){
+		WebClient client = WebClient.getInstance();
+		client.sendMessage(appContext, WebClient.Method_getVersionInfo, null);
+	}
+		
+
 	private GetReminderMsgThread mGetReminderMsgThread;
 	class GetReminderMsgThread extends Thread{
 		public void run() {
@@ -123,16 +182,42 @@ public class MainActivity extends BaseActivity implements InterpolatedTimeListen
 			mMenu.toggle();
 
 	}
+	public void view_main(View view)
+	{
+		
+	}
 	@Click(R.id.ButtonQuitLogin)
 	public void OnClickQuitLogin(){
-		mRelativeLayoutViewLogin.setVisibility(View.VISIBLE);
-		mRelativeLayoutViewHome.setVisibility(View.INVISIBLE);
 		
-		if(mMenu != null){
-			mMenu.toggle();
+		AlertDialog.Builder builder;
+		if(Build.VERSION.SDK_INT < 11){
+			builder = new Builder(this);
+		}else{
+			builder = new Builder(this,R.style.dialog);
 		}
-			
-		mMenu.setSlideEnable(false);
+		builder.setTitle(R.string.string_quit_login);
+		
+		builder.setPositiveButton(R.string.string_confirm, new DialogInterface.OnClickListener()
+		{
+			@Override
+			public void onClick(DialogInterface dialog, int which)
+			{
+				dialog.dismiss();
+				finish();
+			}
+		});
+		builder.setNegativeButton(R.string.soft_update_cancel, new DialogInterface.OnClickListener()
+		{
+			@Override
+			public void onClick(DialogInterface dialog, int which)
+			{
+				dialog.dismiss();
+			}
+		});
+		Dialog noticeDialog = builder.create();
+		noticeDialog.show();
+		
+		
 	}
 	@Click(R.id.ImageButtonReminder)
 	public void OnClickReminder(){
@@ -142,32 +227,22 @@ public class MainActivity extends BaseActivity implements InterpolatedTimeListen
 		}
 
 	}
-	
 	public Handler mHandler=new Handler()  
 	{  
 		public void handleMessage(Message msg)  
 		{  
 			switch(msg.what)  
 			{  
-			case HANDLE_LOGIN:{
-				enableRefresh = true;
-				RotateAnimation rotateAnim = null;
-				float cX = mRelativeLayoutMain.getWidth() / 2.0f;
-				float cY = mRelativeLayoutMain.getHeight() / 2.0f;
-				rotateAnim = new RotateAnimation(cX, cY, RotateAnimation.ROTATE_DECREASE);
-				if (rotateAnim != null) {
-					rotateAnim.setInterpolatedTimeListener(MainActivity.this);
-					rotateAnim.setFillAfter(true);
-					mRelativeLayoutMain.startAnimation(rotateAnim);
-				}
-//				mRelativeLayoutViewLogin.setVisibility(View.INVISIBLE);
-//				mRelativeLayoutViewHome.setVisibility(View.VISIBLE);
-				updateProductServiceList();
+			case HANDLE_REMINDER:{
+//				mTextViewHintContent.setText(lpAllReminder.get(0).getMsg_Content());
+				updateDB(lpAllReminder);
 				selectNewReminderNum();
-				mGetReminderMsgThread = new GetReminderMsgThread();
-				mGetReminderMsgThread.start();
 			}
 				break;  
+			case HANDLE_UPDATE_VERSION:{
+				mTextViewCurrentVersion.setText(getResources().getString(R.string.soft_update_no));
+			}
+			break;  
 			default:  
 				break;            
 			}  
@@ -178,61 +253,90 @@ public class MainActivity extends BaseActivity implements InterpolatedTimeListen
 	@AfterViews
 	public void init(){
 		appContext = (AppContext) getApplication();
-		 //关闭自动弹出的输入法
-        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+		mUserInfo = UserInfo.getAppManager();
         //去掉信息栏
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, 
         		WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        mRelativeLayoutViewLogin = (LoginView) findViewById(R.id.RelativeLayoutLogin);
-        mRelativeLayoutViewHome = (RelativeLayout) findViewById(R.id.RelativeLayoutHome);
-        mRelativeLayoutMain = (RelativeLayout) findViewById(R.id.RelativeLayoutMain);
-        mRelativeLayoutLogo = (RelativeLayout) findViewById(R.id.RelativeLayoutLogo);
+		 //关闭自动弹出的输入法
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         mListViewServiceStatus = (ListView) findViewById(R.id.ListViewCell);
         mMenu = (SlidingMenu) findViewById(R.id.id_menu);
-		if(mMenu.getSlideEnable()){
-			mMenu.setSlideEnable(false);
-		}
-		mRelativeLayoutViewLogin.setLoginViewListener(this);
+		mMenu.setSlideEnable(true);
 		mServiceStatusListViewAdapter = new ServiceStatusListViewAdapter(appContext, lpAllServiceStatusList, R.layout.listitem_service_status);
 		mListViewServiceStatus.setAdapter(mServiceStatusListViewAdapter);
 		mListViewServiceStatus.setOnItemClickListener(this);
+		
+		mListViewServiceStatus.setOnScrollListener(new OnScrollListener() {
+			
+			@Override
+			public void onScrollStateChanged(AbsListView view, int scrollState) {
+				// TODO Auto-generated method stub
+			    switch (scrollState) {
+			    // 当不滚动时
+			    case OnScrollListener.SCROLL_STATE_IDLE:
+				    // 判断滚动到底部
+				    if (mListViewServiceStatus.getLastVisiblePosition() == (mListViewServiceStatus.getCount() - 1)) {
+				    	Log.d("huwei", "滚动到底部"); 
+				    }
+				    // 判断滚动到顶部
+	
+				    if(mListViewServiceStatus.getFirstVisiblePosition() == 0){
+				    	Log.d("huwei", "滚动到顶部"); 
+				    }
 
+			     break;
+		        } 
+			}
+			
+			@Override
+			public void onScroll(AbsListView view, int firstVisibleItem,
+					int visibleItemCount, int totalItemCount) {
+				// TODO Auto-generated method stub
+				Log.d("huwei", "firstVisibleItem = " + firstVisibleItem ); 
+				Log.d("huwei", "visibleItemCount = " + visibleItemCount ); 
+				Log.d("huwei", "totalItemCount = " + totalItemCount ); 
+				if(totalItemCount > 2){
+					if(firstVisibleItem == 0){
+						ImageViewScrollArrowUp.setVisibility(View.GONE);
+						
+						ImageViewScrollArrowDown.setVisibility(View.VISIBLE);
+					}
+					else if((firstVisibleItem + visibleItemCount) == totalItemCount){
+						
+						ImageViewScrollArrowDown.setVisibility(View.GONE);
+					}
+					else{
+						ImageViewScrollArrowUp.setVisibility(View.VISIBLE);
+						
+						ImageViewScrollArrowDown.setVisibility(View.VISIBLE);
+					}
+				}
+			}
+		});
 		mDBtableReminderItem = new DBtableReminderItem(appContext);
 		mDBtableReminderItem.createDBtable();
 		
-		//		mListViewServiceStatus.setOnClickListener(new OnClickListener() {
-//			
-//			@Override
-//			public void onClick(View v) {
-//				// TODO Auto-generated method stub
-//				
-//			}
-//		});
+		updateProductServiceList();
+		selectNewReminderNum();
+		
+		mTextViewUserName.setText(mUserInfo.getUserName());
+		mGetReminderMsgThread = new GetReminderMsgThread();
+		mGetReminderMsgThread.start();
+		
+		manager = new UpdateManager(this);
+		mTextViewCurrentVersion.setText("V"+appContext.AppVesion);
+		
+		WebClient client = WebClient.getInstance();
+		client.sendMessage(appContext, WebClient.Method_getVersionInfo, null);
 		
 		IntentFilter filter = new IntentFilter();
-		filter.addAction(WebClient.INTERNAL_ACTION_LOGIN);
 		filter.addAction(WebClient.INTERNAL_ACTION_GETREMINDS);
 		filter.addAction(WebClient.INTERNAL_ACTION_FINDPRODUCTSERVICELIST);
+		filter.addAction(WebClient.INTERNAL_ACTION_GETVERSIONINFO);
+		
 		appContext.registerReceiver(receiver, filter);
-        appBlur();
+
 	}
-/*	private void createDialog() {
-		//创建ProgressDialog对象
-		m_pDialog = new ProgressDialog(this,R.style.dialog);
-
-		// 设置进度条风格，风格为圆形，旋转的
-		m_pDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-		
-		// 设置ProgressDialog 的进度条是否不明确
-		m_pDialog.setIndeterminate(false);
-		
-		// 设置ProgressDialog 是否可以按退回按键取消
-		m_pDialog.setCancelable(true);
-
-		// 让ProgressDialog显示
-		m_pDialog.show();
-	}  */
-
 
 	public BroadcastReceiver receiver = new BroadcastReceiver() {
 		public void onReceive(Context context, Intent intent) {
@@ -240,45 +344,22 @@ public class MainActivity extends BaseActivity implements InterpolatedTimeListen
 
 			String resXml = intent.getStringExtra(WebClient.Param_resXml);
 			
-			if(intent.getAction().equals(WebClient.INTERNAL_ACTION_LOGIN))
-			{
-
-				if(resXml != null)
-				{
-					if(resXml.equals("error"))
-					{
-						UIHealper.DisplayToast(appContext,"用户名和密码错误！");
-						mRelativeLayoutViewLogin.LoginFail();
-					}
-					else if(resXml.equals("null")){
-						UIHealper.DisplayToast(appContext,"登陆失败，请检查网络是否连通！");
-						mRelativeLayoutViewLogin.LoginFail();
-					}
-					else
-					{	
-						mUserInfo = UserInfo.getAppManager();
-						parseXML.ConserveUserInfo(resXml, mUserInfo);
-						mRelativeLayoutViewLogin.LoginSuccess();
-						Message message = new Message();
-						message.what = HANDLE_LOGIN;
-						mHandler.sendMessage(message); 
-					}
-				}
-			}else if(intent.getAction().equals(WebClient.INTERNAL_ACTION_GETREMINDS)){
+			if(intent.getAction().equals(WebClient.INTERNAL_ACTION_GETREMINDS)){
 				if(resXml.equals("error")){
 					
 				}else{
 					lpAllReminder.clear();
 					parseXML.ConserveReminder(resXml, lpAllReminder);
-					if(lpAllReminder.size()>0){
-						mTextViewHintContent.setText(lpAllReminder.get(0).getMsg_Content());
-						updateDB(lpAllReminder);
-						selectNewReminderNum();
-					}
+//					UserReminder n = new UserReminder("12", 1, "发到公司等个人奋斗是法国人色如果");
+//					lpAllReminder.add(n);
+						Message message = new Message();
+						message.what = HANDLE_REMINDER;
+						mHandler.sendMessage(message);
+
 					
 				}
 			}else if(intent.getAction().equals(WebClient.INTERNAL_ACTION_FINDPRODUCTSERVICELIST)){
-				
+				stopProgressDialog();
 				if(resXml.equals("error")){
 					
 				}else{
@@ -310,6 +391,32 @@ public class MainActivity extends BaseActivity implements InterpolatedTimeListen
 					}
 				}
 			}
+			else if(intent.getAction().equals(WebClient.INTERNAL_ACTION_GETVERSIONINFO))
+			{
+				if(resXml.equals("error")){
+					
+				}
+				else if(resXml.equals("null")){
+					
+				}
+				else{
+					try{
+						// 解析XML文件。 由于XML文件比较小，因此使用DOM方式进行解析
+						HashMap<String, String> HashMap = parseXML.ConserveVersionUpdateInfo(resXml);
+						int res = manager.checkUpdate(HashMap);
+						if(res == 1){
+							Message message=new Message();  
+							message.what = HANDLE_UPDATE_VERSION;  
+							mHandler.sendMessage(message);  
+						}
+					}
+					catch(Exception e)
+					{
+						e.printStackTrace();
+					}	
+				}
+
+			}
 		};
 	};
 	protected void onDestroy() 
@@ -334,70 +441,9 @@ public class MainActivity extends BaseActivity implements InterpolatedTimeListen
 		}
 		firstTime = System.currentTimeMillis();
 	}
-	//翻转动作监听
-	@Override
-	public void interpolatedTime(float interpolatedTime) {
-		// TODO Auto-generated method stub
-		// 监听到翻转进度过半时，更新txtNumber显示内容。
-		if (enableRefresh && interpolatedTime > 0.5f) {
-			mRelativeLayoutViewLogin.setVisibility(View.INVISIBLE);
-			mRelativeLayoutViewHome.setVisibility(View.VISIBLE);
-			enableRefresh = false;
-		}
-	}
-	//把登录框进行模糊处理
-    private void appBlur(){
-    	mRelativeLayoutLogo.getViewTreeObserver().addOnPreDrawListener(new OnPreDrawListener() {
-            
-            @Override
-            public boolean onPreDraw() {
-            	mRelativeLayoutLogo.getViewTreeObserver().removeOnPreDrawListener(this);
-            	mRelativeLayoutLogo.buildDrawingCache();
-
-                Bitmap bmp = mRelativeLayoutLogo.getDrawingCache();
-                blur(bmp, mRelativeLayoutViewLogin);
-                return true;
-            }
-        });
-    }
-    
-    //模糊处理
-    @SuppressWarnings("deprecation")
-	private void blur(Bitmap bkg, View view){
-        long startMs = System.currentTimeMillis();
-        float scaleFactor = 1;
-        float radius = 15;//20
-        Bitmap overlay = Bitmap.createBitmap((int) (view.getMeasuredWidth()), 
-                (int) (view.getMeasuredHeight()), Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(overlay);
-        canvas.translate(-view.getLeft(), -view.getTop());
-        canvas.scale(1 / scaleFactor, 1 / scaleFactor);
-        Paint paint = new Paint();
-        paint.setFlags(Paint.FILTER_BITMAP_FLAG);
-        canvas.drawBitmap(bkg, 0, 0, paint);
-        overlay = FastBlur.doBlur(overlay, (int)radius, true);
-        view.setBackgroundDrawable(new BitmapDrawable(getResources(), overlay));
-        Log.e("", System.currentTimeMillis() - startMs + "ms");
-    }
-	@Override
-	public void OnClickLogin(String username, String password) {
-		// TODO Auto-generated method stub
-		if((username.equals("")) || (password.equals("")))
-		{
-			UIHealper.DisplayToast(appContext,"用户名或密码不能为空！");
-		}
-		else 
-		{
-
-			mMenu.setSlideEnable(true);
-			WebClient client = WebClient.getInstance();
-			Map<String,String> param = new HashMap<String, String>();
-			param.put(username, password);	
-			client.sendMessage(appContext, WebClient.Method_login, param);
-		}
-	}
 	//获取所有产品服务
 	private void updateProductServiceList(){
+		startProgressDialog("正在加载...");
 		WebClient client = WebClient.getInstance();
 		Map<String,String> param = new HashMap<String, String>();
 		param.put(getString(R.string.UserID), mUserInfo.getUserID());	
@@ -409,11 +455,6 @@ public class MainActivity extends BaseActivity implements InterpolatedTimeListen
 		Map<String,String> param = new HashMap<String, String>();
 		param.put(getString(R.string.UserID), mUserInfo.getUserID());	
 		client.sendMessage(appContext, WebClient.Method_getReminds, param);
-	}
-	@Override
-	public void OnSeekPassword() {
-		// TODO Auto-generated method stub
-		
 	}
 	@Override
 	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
@@ -428,7 +469,12 @@ public class MainActivity extends BaseActivity implements InterpolatedTimeListen
 
 	}
 	@SuppressLint("NewApi") private void showReminderDialog(){
-		AlertDialog.Builder builder = new Builder(MainActivity.this,R.style.dialog);
+		AlertDialog.Builder builder;
+		if(Build.VERSION.SDK_INT < 11){
+			builder = new Builder(this);
+		}else{
+			builder = new Builder(this,R.style.dialog);
+		}
 		builder.setInverseBackgroundForced(true);
 		builder.setTitle(getString(R.string.reminderTitle));
 		final LayoutInflater inflater = LayoutInflater.from(MainActivity.this);
@@ -438,7 +484,7 @@ public class MainActivity extends BaseActivity implements InterpolatedTimeListen
 		mListViewReminder.setAdapter(mReminderListViewAdapter);
 		mReminderListViewAdapter.notifyDataSetChanged();
 		builder.setView(viewReminder);
-		builder.setPositiveButton(R.string.dialog_confirm, new android.content.DialogInterface.OnClickListener()
+		builder.setPositiveButton(R.string.string_confirm, new android.content.DialogInterface.OnClickListener()
 		{
 			@Override
 			public void onClick(DialogInterface dialog, int which)
@@ -454,13 +500,17 @@ public class MainActivity extends BaseActivity implements InterpolatedTimeListen
 			return; 
 		}
 		List<UserReminder> l_UserReminderList = new ArrayList<UserReminder>();
-		myCursor=mDBtableReminderItem.select();
+		myCursor=mDBtableReminderItem.selectByAttribute(mUserInfo.getUserID());
 //		把从数据库中获取的数据放入数组列表
 		for(int i = 0;i < myCursor.getCount();i++){
 			myCursor.moveToPosition(i);
-			UserReminder l_UserReminder = new UserReminder(myCursor.getString(0), myCursor.getInt(1), myCursor.getString(2));
+			UserReminder l_UserReminder = new UserReminder(myCursor.getString(0), myCursor.getString(1), myCursor.getInt(2), myCursor.getString(3));
 			l_UserReminderList.add(l_UserReminder);
 		}
+		if(myCursor != null){
+			myCursor.close();
+		}
+		
 		//插入新消息到数据库
 		if(x_UserReminderList.size()>0){
 			for(int i = 0;i < x_UserReminderList.size();i++){
@@ -474,7 +524,7 @@ public class MainActivity extends BaseActivity implements InterpolatedTimeListen
 		if(l_UserReminderList.size() > 0){
 			for(int i = 0;i < l_UserReminderList.size();i++){
 				if(!IsExistCurrentMsg(x_UserReminderList,l_UserReminderList.get(i))){
-					mDBtableReminderItem.delete(l_UserReminderList.get(i).getMsg_Reminder_Id());
+					mDBtableReminderItem.delete(l_UserReminderList.get(i).getMsg_User_Id(),l_UserReminderList.get(i).getMsg_Reminder_Id());
 				}
 			}
 		}
@@ -501,14 +551,18 @@ public class MainActivity extends BaseActivity implements InterpolatedTimeListen
 			mDBtableReminderItem.createDBtable();
 		}
 		
-		myCursor=mDBtableReminderItem.select();
+		myCursor=mDBtableReminderItem.selectByAttribute(mUserInfo.getUserID());
 		mUserReminderList.clear();
 //		把从数据库中获取的数据放入数组列表
 		for(int i = 0;i < myCursor.getCount();i++){
 			myCursor.moveToPosition(i);
-			UserReminder l_UserReminder = new UserReminder(myCursor.getString(0), myCursor.getInt(1), myCursor.getString(2));
+			UserReminder l_UserReminder = new UserReminder(myCursor.getString(0), myCursor.getString(1), myCursor.getInt(2), myCursor.getString(3));
 			mUserReminderList.add(l_UserReminder);
 		}
+		if(myCursor != null){
+			myCursor.close();
+		}
+		
 		mAllMsgCount = mUserReminderList.size();
 		if(mUserReminderList.size() > 0){
 			for(int i = 0;i < mUserReminderList.size();i++){
@@ -526,7 +580,7 @@ public class MainActivity extends BaseActivity implements InterpolatedTimeListen
 			mTextViewHintCount.setVisibility(View.GONE);
 		}
 		if(mAllMsgCount>0){
-			mTextViewHintContent.setText(mUserReminderList.get(0).getMsg_Content());
+			mTextViewHintContent.setText(mUserReminderList.get(mAllMsgCount-1).getMsg_Content());
 		}
 	}
 	//清空新消息提醒
@@ -537,18 +591,22 @@ public class MainActivity extends BaseActivity implements InterpolatedTimeListen
 			mDBtableReminderItem.createDBtable();
 		}
 		
-		myCursor=mDBtableReminderItem.select();
+		myCursor=mDBtableReminderItem.selectByAttribute(mUserInfo.getUserID());
 //		把从数据库中获取的数据放入数组列表
 		for(int i = 0;i < myCursor.getCount();i++){
 			myCursor.moveToPosition(i);
-			UserReminder l_UserReminder = new UserReminder(myCursor.getString(0), myCursor.getInt(1), myCursor.getString(2));
+			UserReminder l_UserReminder = new UserReminder(myCursor.getString(0), myCursor.getString(1), myCursor.getInt(2), myCursor.getString(3));
 			l_UserReminderList.add(l_UserReminder);
 		}
+		if(myCursor != null){
+			myCursor.close();
+		}
+		
 		if(l_UserReminderList.size() > 0){
 			for(int i = 0;i < l_UserReminderList.size();i++){
 				if(l_UserReminderList.get(i).getMsg_Is_New()==1){
-					UserReminder l_UserReminder = new UserReminder(l_UserReminderList.get(i).getMsg_Reminder_Id(), 0, l_UserReminderList.get(i).getMsg_Content());	
-					mDBtableReminderItem.update(l_UserReminder, l_UserReminderList.get(i).getMsg_Reminder_Id());
+					UserReminder l_UserReminder = new UserReminder(l_UserReminderList.get(i).getMsg_User_Id(),l_UserReminderList.get(i).getMsg_Reminder_Id(),0, l_UserReminderList.get(i).getMsg_Content());	
+					mDBtableReminderItem.update(l_UserReminder, l_UserReminderList.get(i).getMsg_User_Id(),l_UserReminderList.get(i).getMsg_Reminder_Id());
 				}
 			}
 		}

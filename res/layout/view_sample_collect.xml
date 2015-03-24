@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="#c4c4c4"
+    android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/ImageViewSampleCollect"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/sample_collect_pic" />
+    <LinearLayout 
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@drawable/shade_bar">
+        <TextView 
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:textColor="@color/white"
+	        android:textSize="19sp"
+	        android:layout_gravity="center_vertical"
+	        android:paddingLeft="20dp"
+	        android:text="样本采集"/>
+    </LinearLayout>
+    <LinearLayout 
+        android:id="@+id/LinearLayoutSampleCollectWare"
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal"
+        android:background="@color/white"
+        android:visibility="gone">
+        <ImageView 
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:background="@color/transparent"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/warn_pic"/>
+        <TextView 
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:textColor="@color/green"
+	        android:textSize="19sp"
+	        android:layout_gravity="center_vertical"
+	        android:paddingLeft="5dp"
+	        android:text="提醒项："/>
+    </LinearLayout>
+	<ListView
+	    android:id="@+id/ListViewSampleCollectWare"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:background="@color/theme_gray" >
+	</ListView>
+    <LinearLayout 
+        android:id="@+id/LinearLayoutSampleCollectRequest"
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal"
+        android:background="@color/white"
+        android:visibility="gone">
+        <ImageView 
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:background="@color/transparent"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/require_pic"/>
+        <TextView 
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:textColor="@color/green"
+	        android:textSize="19sp"
+	        android:layout_gravity="center_vertical"
+	        android:paddingLeft="5dp"
+	        android:text="要求："/>
+    </LinearLayout>
+
+	<ListView
+	    android:id="@+id/ListViewSampleCollectRequest"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:background="@color/theme_gray" >
+	</ListView>	
+</LinearLayout>

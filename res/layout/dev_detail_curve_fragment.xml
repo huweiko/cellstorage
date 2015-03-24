@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+ <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+     android:layout_width="fill_parent"
+     android:layout_height="wrap_content"
+     android:orientation="vertical" 
+     android:background="@color/white"
+     android:paddingLeft="10dp"
+     android:paddingRight="10dp">
+
+	     <LinearLayout
+	         android:id="@+id/linearlayoutCurveMenu"
+	         android:layout_width="fill_parent"
+	         android:layout_height="wrap_content"
+	         android:orientation="horizontal"
+	         android:background="@color/white">
+	
+	         <Button
+	             android:id="@+id/ButtonWeekCurve"
+	             android:layout_width="fill_parent"
+	             android:layout_height="wrap_content"
+	             android:layout_gravity="center_vertical"
+	             android:layout_weight="1"
+	             android:background="@color/white"
+	             android:text="周曲线"
+	             android:textColor="@color/theme_curve_green_color"
+	             android:textSize="20sp" />
+	
+	         <Button
+	             android:id="@+id/ButtonMonthCurve"
+	             android:layout_width="fill_parent"
+	             android:layout_height="wrap_content"
+	             android:layout_gravity="center_vertical"
+	             android:layout_weight="1"
+	             android:background="@color/white"
+	             android:textColor="@color/theme_gray_text_color"
+	             android:text="月曲线"
+	             android:textSize="15sp" />
+	     </LinearLayout>
+	     <LinearLayout
+		     android:id="@+id/linearlayoutCurve"
+		     android:layout_width="fill_parent"
+		     android:layout_height="270dp"
+		     android:orientation="vertical"
+		     android:gravity="center"
+		     android:background="@color/white">
+	     </LinearLayout>
+	
+	     <TextView
+	         android:id="@+id/TextViewStorageCurveTimeRange"
+	         android:layout_width="wrap_content"
+	         android:layout_height="wrap_content"
+	         android:textColor="@color/theme_gray_text_color"
+	         android:textSize="15sp"/>
+</LinearLayout>

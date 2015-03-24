@@ -7,12 +7,18 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 public class AppContext extends Application{ 
 	public String ApplicationName;
+	public String AppVesion;
     @Override 
     public void onCreate() { 
         // TODO Auto-generated method stub 
         super.onCreate(); 
         ApplicationName = getString(R.string.app_name);
-		
+        try {
+			AppVesion = getVersionName();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     } 
     /*
      * 获取应用版本号

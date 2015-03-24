@@ -1,7 +1,9 @@
 package com.cellstorage.utils;
 
 import java.io.StringReader;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import org.jdom2.Document;
@@ -11,7 +13,11 @@ import org.xml.sax.InputSource;
 
 import com.cellstorage.OtherHealper;
 import com.cellstorage.struct.ContractInfo;
-import com.cellstorage.struct.SampleStatusInfoTBL;
+import com.cellstorage.struct.SampleStatusDetection;
+import com.cellstorage.struct.SampleStatusInfo;
+import com.cellstorage.struct.SampleStatusPreparation;
+import com.cellstorage.struct.SampleStatusStorage;
+import com.cellstorage.struct.SampleStatusTakeover;
 import com.cellstorage.struct.ServiceStatus;
 import com.cellstorage.struct.UserInfo;
 import com.cellstorage.struct.UserReminder;
@@ -82,245 +88,100 @@ public class parseXML{
 		}
 	}
 	//样本实时信息转换
-	public static void ConserveSampleStatusInfo(String XMLString, SampleStatusInfoTBL mSampleStatusInfoTBL) 
+	public static void ConserveSampleStatusInfo(String XMLString, SampleStatusInfo mSampleStatusInfo) 
 	{
 		Element rootElement = StringToElement(XMLString);
 		
 		Element e = null;
 		
-		if(rootElement != null && mSampleStatusInfoTBL != null){
+		if(rootElement != null && mSampleStatusInfo != null){
 			if((e =rootElement.getChild("sampleStatusId")) != null){
-				if(!e.getValue().equals("null")){
-					mSampleStatusInfoTBL.setSampleStatusId(Integer.parseInt(e.getValue()));
+				if(!e.getValue().equals("")){
+					mSampleStatusInfo.setSampleStatusId(Integer.parseInt(e.getValue()));
+				}
+			}  
+			if((e =rootElement.getChild("qualityCL")) != null){
+				if(!e.getValue().equals("")){
+					mSampleStatusInfo.setQualityCL(e.getValue());
+				}
+			}  
+			if((e =rootElement.getChild("process")) != null){
+				if(!e.getValue().equals("")){
+					mSampleStatusInfo.setSampleProcess(e.getValue());
+				}
+			}  
+			if((e =rootElement.getChild("range")) != null){
+				if(!e.getValue().equals("")){
+					mSampleStatusInfo.setQualityCLRange(e.getValue());
+				}
+			}  
+			if((e =rootElement.getChild("status")) != null){
+				if(!e.getValue().equals("")){
+					mSampleStatusInfo.setQualityCLStatus(e.getValue());
 				}
 			}  
 			if((e =rootElement.getChild("applyTime")) != null){
-				if(!e.getValue().equals("null")){
+				if(!e.getValue().equals("")){
 					String l_DateFormat = "yyyy-MM-dd hh:mm:ss";
 					Date aa = OtherHealper.StringToDate(e.getValue(), l_DateFormat);
-					mSampleStatusInfoTBL.setApplyTime(aa);
+					mSampleStatusInfo.setApplyTime(aa);
 				}
 			}  
-			if((e =rootElement.getChild("arrivePlace")) != null){
-				if(!e.getValue().equals("null")){
-					mSampleStatusInfoTBL.setArrivePlace(e.getValue());
-				}
-			}  
-			if((e =rootElement.getChild("arriveSurTemp")) != null){
-				if(!e.getValue().equals("null")){
-					mSampleStatusInfoTBL.setArriveSurTemp(Float.parseFloat(e.getValue()));
-				}
-			}  
-			if((e =rootElement.getChild("arriveTime")) != null){
-				if(!e.getValue().equals("null")){
-					String l_DateFormat = "yyyy-MM-dd hh:mm:ss";
-					Date aa = OtherHealper.StringToDate(e.getValue(), l_DateFormat);
-					mSampleStatusInfoTBL.setArriveTime(aa);
-				}
-			}  
-			if((e =rootElement.getChild("collectPlace")) != null){
-				if(!e.getValue().equals("null")){
-					mSampleStatusInfoTBL.setCollectPlace(e.getValue());
-				}
-			}  
-			if((e =rootElement.getChild("collectQuantity")) != null){
-				if(!e.getValue().equals("null")){
-					mSampleStatusInfoTBL.setCollectQuantity(Float.parseFloat(e.getValue()));
-				}
-			}
 			if((e =rootElement.getChild("collectTime")) != null){
-				if(!e.getValue().equals("null")){
+				if(!e.getValue().equals("")){
 					String l_DateFormat = "yyyy-MM-dd hh:mm:ss";
 					Date aa = OtherHealper.StringToDate(e.getValue(), l_DateFormat);
-					mSampleStatusInfoTBL.setCollectTime(aa);
-				}
-			}
-			if((e =rootElement.getChild("collectVerdict")) != null){
-				if(!e.getValue().equals("null")){
-					mSampleStatusInfoTBL.setCollectVerdict(e.getValue());
-				}
-			}  
-			if((e =rootElement.getChild("examNds")) != null){
-				if(!e.getValue().equals("null")){
-					mSampleStatusInfoTBL.setExamNds(e.getValue());
-				}
-			}  
-			if((e =rootElement.getChild("examVerdict")) != null){
-				if(!e.getValue().equals("null")){
-					mSampleStatusInfoTBL.setExamVerdict(e.getValue());
-				}
-			}  
-			if((e =rootElement.getChild("examXbbmky")) != null){
-				if(!e.getValue().equals("null")){
-					mSampleStatusInfoTBL.setExamXbbmky(e.getValue());
-				}
-			}  
-			if((e =rootElement.getChild("examXyzj")) != null){
-				if(!e.getValue().equals("null")){
-					mSampleStatusInfoTBL.setExamXyzj(e.getValue());
-				}
-			}  
-			if((e =rootElement.getChild("examYyzj")) != null){
-				if(!e.getValue().equals("null")){
-					mSampleStatusInfoTBL.setExamYyzj(e.getValue());
-				}
-			}  
-			if((e =rootElement.getChild("examZyt")) != null){
-				if(!e.getValue().equals("null")){
-					mSampleStatusInfoTBL.setExamZyt(e.getValue());
-				}
-			}  
-			if((e =rootElement.getChild("freezonStatus")) != null){
-				if(!e.getValue().equals("null")){
-					mSampleStatusInfoTBL.setFreezonStatus(e.getValue());
-				}
-			}  
-			if((e =rootElement.getChild("freezonTime")) != null){
-				if(!e.getValue().equals("null")){
-					String l_DateFormat = "yyyy-MM-dd hh:mm:ss";
-					Date aa = OtherHealper.StringToDate(e.getValue(), l_DateFormat);
-					mSampleStatusInfoTBL.setFreezonTime(aa);
-				}
-			}
-			if((e =rootElement.getChild("livingcellNum")) != null){
-				if(!e.getValue().equals("null")){
-					mSampleStatusInfoTBL.setLivingcellNum(Float.parseFloat(e.getValue()));
-				}
-			}  
-			if((e =rootElement.getChild("livingcellRate")) != null){
-				if(!e.getValue().equals("null")){
-					mSampleStatusInfoTBL.setLivingcellRate(Integer.parseInt(e.getValue()));
-				}
-			}  
-			if((e =rootElement.getChild("pass0Status")) != null){
-				if(!e.getValue().equals("null")){
-					mSampleStatusInfoTBL.setPass0Status(e.getValue());
-				}
-			}
-			if((e =rootElement.getChild("pass0Time")) != null){
-				if(!e.getValue().equals("null")){
-					String l_DateFormat = "yyyy-MM-dd hh:mm:ss";
-					Date aa = OtherHealper.StringToDate(e.getValue(), l_DateFormat);
-					mSampleStatusInfoTBL.setPass0Time(aa);
-				}
-			}
-			if((e =rootElement.getChild("pass1Status")) != null){
-				if(!e.getValue().equals("null")){
-					mSampleStatusInfoTBL.setPass1Status(e.getValue());
-				}
-			}
-			if((e =rootElement.getChild("pass1Time")) != null){
-				if(!e.getValue().equals("null")){
-					String l_DateFormat = "yyyy-MM-dd hh:mm:ss";
-					Date aa = OtherHealper.StringToDate(e.getValue(), l_DateFormat);
-					mSampleStatusInfoTBL.setPass1Time(aa);
-				}
-			}
-			if((e =rootElement.getChild("pass2Status")) != null){
-				if(!e.getValue().equals("null")){
-					mSampleStatusInfoTBL.setPass2Status(e.getValue());
-				}
-			}
-			if((e =rootElement.getChild("pass2Time")) != null){
-				if(!e.getValue().equals("null")){
-					String l_DateFormat = "yyyy-MM-dd hh:mm:ss";
-					Date aa = OtherHealper.StringToDate(e.getValue(), l_DateFormat);
-					mSampleStatusInfoTBL.setPass2Time(aa);
+					mSampleStatusInfo.setCollectTime(aa);
 				}
 			}
 			if((e =rootElement.getChild("prepareTime")) != null){
-				if(!e.getValue().equals("null")){
+				if(!e.getValue().equals("")){
 					String l_DateFormat = "yyyy-MM-dd hh:mm:ss";
 					Date aa = OtherHealper.StringToDate(e.getValue(), l_DateFormat);
-					mSampleStatusInfoTBL.setPrepareTime(aa);
-				}
-			}
-			if((e =rootElement.getChild("primaryStatus")) != null){
-				if(!e.getValue().equals("null")){
-					mSampleStatusInfoTBL.setPrimaryStatus(e.getValue());
+					mSampleStatusInfo.setPrepareTime(aa);
 				}
 			}
 			if((e =rootElement.getChild("primaryTime")) != null){
-				if(!e.getValue().equals("null")){
+				if(!e.getValue().equals("")){
 					String l_DateFormat = "yyyy-MM-dd hh:mm:ss";
 					Date aa = OtherHealper.StringToDate(e.getValue(), l_DateFormat);
-					mSampleStatusInfoTBL.setPrimaryTime(aa);
+					mSampleStatusInfo.setPrimaryTime(aa);
 				}
 			}
 			if((e =rootElement.getChild("reportTime")) != null){
-				if(!e.getValue().equals("null")){
+				if(!e.getValue().equals("")){
 					String l_DateFormat = "yyyy-MM-dd hh:mm:ss";
 					Date aa = OtherHealper.StringToDate(e.getValue(), l_DateFormat);
-					mSampleStatusInfoTBL.setReportTime(aa);
+					mSampleStatusInfo.setReportTime(aa);
 				}
 			}
-			if((e =rootElement.getChild("sampleQuantity")) != null){
-				if(!e.getValue().equals("null")){
-					mSampleStatusInfoTBL.setSampleQuantity(Float.parseFloat(e.getValue()));
-				}
-			} 
 			if((e =rootElement.getChild("signedTime")) != null){
-				if(!e.getValue().equals("null")){
+				if(!e.getValue().equals("")){
 					String l_DateFormat = "yyyy-MM-dd hh:mm:ss";
 					Date aa = OtherHealper.StringToDate(e.getValue(), l_DateFormat);
-					mSampleStatusInfoTBL.setSignedTime(aa);
+					mSampleStatusInfo.setSignedTime(aa);
 				}
 			}
 			if((e =rootElement.getChild("startTransTime")) != null){
-				if(!e.getValue().equals("null")){
+				if(!e.getValue().equals("")){
 					String l_DateFormat = "yyyy-MM-dd hh:mm:ss";
 					Date aa = OtherHealper.StringToDate(e.getValue(), l_DateFormat);
-					mSampleStatusInfoTBL.setStartTransTime(aa);
+					mSampleStatusInfo.setStartTransTime(aa);
 				}
 			}
 			if((e =rootElement.getChild("storageTime")) != null){
-				if(!e.getValue().equals("null")){
+				if(!e.getValue().equals("")){
 					String l_DateFormat = "yyyy-MM-dd hh:mm:ss";
 					Date aa = OtherHealper.StringToDate(e.getValue(), l_DateFormat);
-					mSampleStatusInfoTBL.setStorageTime(aa);
-				}
-			}
-			if((e =rootElement.getChild("storageTemp")) != null){
-				if(!e.getValue().equals("null")){
-					mSampleStatusInfoTBL.setStorageTemp(Float.parseFloat(e.getValue()));
-				}
-			} 
-			if((e =rootElement.getChild("storageVerdict")) != null){
-				if(!e.getValue().equals("null")){
-					mSampleStatusInfoTBL.setStorageVerdict(e.getValue());
+					mSampleStatusInfo.setStorageTime(aa);
 				}
 			}
 			
-			if((e =rootElement.getChild("takeoverSurTemp")) != null){
-				if(!e.getValue().equals("null")){
-					mSampleStatusInfoTBL.setTakeoverSurTemp(Float.parseFloat(e.getValue()));
-				}
-			}
 			if((e =rootElement.getChild("takeoverTime")) != null){
-				if(!e.getValue().equals("null")){
+				if(!e.getValue().equals("")){
 					String l_DateFormat = "yyyy-MM-dd hh:mm:ss";
 					Date aa = OtherHealper.StringToDate(e.getValue(), l_DateFormat);
-					mSampleStatusInfoTBL.setTakeoverTime(aa);
-				}
-			}
-			if((e =rootElement.getChild("takeoverVerdict")) != null){
-				if(!e.getValue().equals("null")){
-					mSampleStatusInfoTBL.setTakeoverVerdict(e.getValue());
-				}
-			}
-			if((e =rootElement.getChild("transportVerdict")) != null){
-				if(!e.getValue().equals("null")){
-					mSampleStatusInfoTBL.setTransportVerdict(e.getValue());
-				}
-			}
-			if((e =rootElement.getChild("wrapStatus")) != null){
-				if(!e.getValue().equals("null")){
-					mSampleStatusInfoTBL.setWrapStatus(e.getValue());
-				}
-			}
-			if((e =rootElement.getChild("serviceId")) != null){
-				if(!e.getValue().equals("null")){
-					mSampleStatusInfoTBL.setServiceId(Integer.parseInt(e.getValue()));
+					mSampleStatusInfo.setTakeoverTime(aa);
 				}
 			}
 		}
@@ -330,39 +191,281 @@ public class parseXML{
 		Element element = StringToElement(XMLString);
 		
 		Element e = null;
-		while ((e = element.getChild("services")) != null) {
-			String mType = e.getAttributeValue("type") != null ? e.getAttributeValue("type") : "";
-			String mStatus = e.getAttributeValue("status") != null ? e.getAttributeValue("status") : "";
-			boolean bStatus = mStatus.equals("0")?false:true;
-			ServiceStatus n = new ServiceStatus(mType, bStatus);
-			xServiceStatusList.add(n);
-			element.removeChild("services");
+		if(element != null){
+			while ((e = element.getChild("services")) != null) {
+				String mType = e.getAttributeValue("type") != null ? e.getAttributeValue("type") : "";
+				String mStatus = e.getAttributeValue("status") != null ? e.getAttributeValue("status") : "";
+				boolean bStatus = mStatus.equals("0")?false:true;
+				ServiceStatus n = new ServiceStatus(mType, bStatus);
+				xServiceStatusList.add(n);
+				element.removeChild("services");
+			}
 		}
+
 	}	
 	public static void ConserveReminder(String XMLString, List<UserReminder> xUserReminderList) 
 	{
-		Element element = StringToElement(XMLString);
-		
+		UserInfo mUserInfo = UserInfo.getAppManager();
 		Element e = null;
-		while ((e = element.getChild("message")) != null) {
-			String mID = e.getAttributeValue("id") != null ? e.getAttributeValue("id") : "";
-			String mContent = e.getAttributeValue("content") != null ? e.getAttributeValue("content") : "";
-			UserReminder n = new UserReminder(mID, 1, mContent);
-			xUserReminderList.add(n);
-			element.removeChild("message");
+		Element element = StringToElement(XMLString);
+		if(element != null){
+			while ((e = element.getChild("message")) != null) {
+				String mID = e.getAttributeValue("id") != null ? e.getAttributeValue("id") : "";
+				String mContent = e.getAttributeValue("content") != null ? e.getAttributeValue("content") : "";
+				UserReminder n = new UserReminder(mUserInfo.getUserID(),mID, 1, mContent);
+				xUserReminderList.add(n);
+				element.removeChild("message");
+			}
 		}
+		
+
 	}	
 	public static void ConserveContractInfo(String XMLString, List<ContractInfo> xContractInfo) 
 	{
 		Element element = StringToElement(XMLString);
 		
 		Element e = null;
-		while ((e = element.getChild("services")) != null) {
-			String mContractNo = e.getAttributeValue("contractNo") != null ? e.getAttributeValue("contractNo") : "";
-			String mServiceId = e.getAttributeValue("serviceId") != null ? e.getAttributeValue("serviceId") : "";
-			ContractInfo n = new ContractInfo(mContractNo, mServiceId);
-			xContractInfo.add(n);
-			element.removeChild("services");
+		if(element != null){
+			while ((e = element.getChild("services")) != null) {
+				String mContractNo = e.getAttributeValue("contractNo") != null ? e.getAttributeValue("contractNo") : "";
+				String mServiceId = e.getAttributeValue("serviceId") != null ? e.getAttributeValue("serviceId") : "";
+				ContractInfo n = new ContractInfo(mContractNo, mServiceId);
+				xContractInfo.add(n);
+				element.removeChild("services");
+			}
 		}
+
 	}	
+	public static void ConserveSampleTakeoverInfo(String XMLString, SampleStatusTakeover xSampleStatusTakeover) 
+	{
+		Element element = StringToElement(XMLString);
+		
+		Element e = null;
+		if(element != null && xSampleStatusTakeover != null)
+		{
+			 if((e =element.getChild("takeoverSurTemp")) != null)
+			 {
+				 xSampleStatusTakeover.setTakeoverSurTemp(e.getValue());
+			 }  
+			 if((e =element.getChild("sampleQuantity")) != null)
+			 {
+				 xSampleStatusTakeover.setSampleQuantity(e.getValue());
+			 }  
+			 if((e =element.getChild("wrapStatus")) != null)
+			 {
+				 xSampleStatusTakeover.setWrapStatus(e.getValue());
+			 }  
+			 if((e =element.getChild("takeoverVerdict")) != null)
+			 {
+				 xSampleStatusTakeover.setTakeoverVerdict(e.getValue());
+			 }  
+		
+		}
+		
+	}	
+	public static void ConserveSamplePreparationInfo(String XMLString, SampleStatusPreparation xSampleStatusPreparation) 
+	{
+		Element element = StringToElement(XMLString);
+		
+		Element e = null;
+		if(element != null && xSampleStatusPreparation != null)
+		{
+			if((e =element.getChild("primaryTime")) != null)
+			{
+				if(!e.getValue().equals("")){
+					String l_DateFormat = "yyyy-MM-dd hh:mm:ss";
+					Date aa = OtherHealper.StringToDate(e.getValue(), l_DateFormat);
+					xSampleStatusPreparation.setPrimaryTime(aa);
+				}
+				
+			}  
+			if((e =element.getChild("pass0Time")) != null)
+			{
+				if(!e.getValue().equals("")){
+					String l_DateFormat = "yyyy-MM-dd hh:mm:ss";
+					Date aa = OtherHealper.StringToDate(e.getValue(), l_DateFormat);
+					xSampleStatusPreparation.setPass0Time(aa);
+				}
+				
+			}  
+			if((e =element.getChild("pass1Time")) != null)
+			{
+				if(!e.getValue().equals("")){
+					String l_DateFormat = "yyyy-MM-dd hh:mm:ss";
+					Date aa = OtherHealper.StringToDate(e.getValue(), l_DateFormat);
+					xSampleStatusPreparation.setPass1Time(aa);
+				}
+				
+			}  
+			if((e =element.getChild("pass2Time")) != null)
+			{
+				if(!e.getValue().equals("")){
+					String l_DateFormat = "yyyy-MM-dd hh:mm:ss";
+					Date aa = OtherHealper.StringToDate(e.getValue(), l_DateFormat);
+					xSampleStatusPreparation.setPass2Time(aa);
+				}
+				
+			}  
+			if((e =element.getChild("freezonTime")) != null)
+			{
+				if(!e.getValue().equals("")){
+					String l_DateFormat = "yyyy-MM-dd hh:mm:ss";
+					Date aa = OtherHealper.StringToDate(e.getValue(), l_DateFormat);
+					xSampleStatusPreparation.setFreezonTime(aa);
+				}
+				
+			}  
+
+			if((e =element.getChild("primaryStatus")) != null)
+			{
+				xSampleStatusPreparation.setPrimaryStatus(e.getValue());
+			}  
+			if((e =element.getChild("pass0Status")) != null)
+			{
+				xSampleStatusPreparation.setPass0Status(e.getValue());
+			}  
+			if((e =element.getChild("pass1Status")) != null)
+			{
+				xSampleStatusPreparation.setPass1Status(e.getValue());
+			}  
+			if((e =element.getChild("pass2Status")) != null)
+			{
+				xSampleStatusPreparation.setPass2Status(e.getValue());
+			}  
+			if((e =element.getChild("freezonStatus")) != null)
+			{
+				xSampleStatusPreparation.setFreezonStatus(e.getValue());
+			}  
+			
+		}
+		
+	}	
+	public static void ConserveSampleDetectionInfo(String XMLString, SampleStatusDetection xSampleStatusDetection) 
+	{
+		Element element = StringToElement(XMLString);
+		
+		Element e = null;
+		if(element != null && xSampleStatusDetection != null)
+		{
+			
+			if((e =element.getChild("examZyt")) != null)
+			{
+				xSampleStatusDetection.setExamZyt(e.getValue());
+			}  
+			if((e =element.getChild("examXyzj")) != null)
+			{
+				xSampleStatusDetection.setExamXyzj(e.getValue());
+			}  
+			if((e =element.getChild("examYyzj")) != null)
+			{
+				xSampleStatusDetection.setExamYyzj(e.getValue());
+			}  
+			if((e =element.getChild("examXbbmky")) != null)
+			{
+				xSampleStatusDetection.setExamXbbmky(e.getValue());
+			}  
+			if((e =element.getChild("examVerdict")) != null)
+			{
+				xSampleStatusDetection.setExamVerdict(e.getValue());
+			}  
+			if((e =element.getChild("examNds")) != null)
+			{
+				xSampleStatusDetection.setExamNDS(e.getValue());
+			}  
+			
+		}
+		
+	}	
+	public static void ConserveSampleStorageInfo(String XMLString, SampleStatusStorage xSampleStatusStorage) 
+	{
+		Element element = StringToElement(XMLString);
+		
+		Element e = null;
+		if(element != null && xSampleStatusStorage != null)
+		{
+			if((e =element.getChild("storageTime")) != null)
+			{
+				String l_DateFormat = "yyyy-MM-dd hh:mm:ss";
+				Date aa = OtherHealper.StringToDate(e.getValue(), l_DateFormat);
+				xSampleStatusStorage.setStorageTime(aa);
+			}  
+			
+			if((e =element.getChild("livingcellNum")) != null)
+			{
+				xSampleStatusStorage.setLivingcellNum(e.getValue());
+			}  
+			if((e =element.getChild("livingcellRate")) != null)
+			{
+				xSampleStatusStorage.setLivingcellRate(e.getValue());
+			}  
+			if((e =element.getChild("storageTemp")) != null)
+			{
+				xSampleStatusStorage.setStorageTemp(e.getValue());
+			}  
+			if((e =element.getChild("storageVerdict")) != null)
+			{
+				xSampleStatusStorage.setStorageVerdict(e.getValue());
+			}  
+			if((e =element.getChild("fridgeName")) != null)
+			{
+				xSampleStatusStorage.setFridgeName(e.getValue());
+			}  
+		}
+		
+	}	
+	public static HashMap<String, String> ConserveVersionUpdateInfo(String resXml) throws Exception
+	{
+		HashMap<String, String> hashMap = new HashMap<String, String>();
+		SAXBuilder builder = new SAXBuilder();
+		StringReader sr = new StringReader(resXml);   
+		InputSource is = new InputSource(sr); 
+		Document Doc = builder.build(is);
+		Element rootElement = (Element) Doc.getRootElement();
+
+		Element e = null;
+		 if((e =rootElement.getChild("version")) != null)
+		 {
+			hashMap.put("version",e.getValue());
+		 }  
+		 if((e =rootElement.getChild("name")) != null)
+		 {
+			 hashMap.put("name",e.getValue());
+		 } 
+		 if((e =rootElement.getChild("url")) != null)
+		 {
+			 hashMap.put("url",e.getValue());
+		 } 
+		 if((e =rootElement.getChild("upgrade")) != null)
+		 {
+			 hashMap.put("upgrade",e.getValue());
+		 } 
+		 if((e =rootElement.getChild("content")) != null)
+		 {
+			 hashMap.put("content",e.getValue());
+		 } 
+
+		return hashMap;
+	}
+	public static void ConserveSampleProcessInfo(String XMLString,List<String> x_SampleProcessInfoWare,List<String> x_SampleProcessInfoRequst)
+	{
+		Element element = StringToElement(XMLString);
+		
+		Element childElement = null;
+		if((childElement = element.getChild("list")) != null){
+			Element e = null;
+			while((e = childElement.getChild("remind")) != null){
+				x_SampleProcessInfoWare.add(e.getValue());
+				childElement.removeChild("remind");
+			}
+			element.removeChild("list");
+		}
+		if((childElement = element.getChild("list")) != null){
+			Element e = null;
+			while((e = childElement.getChild("demand")) != null){
+				x_SampleProcessInfoRequst.add(e.getValue());
+				childElement.removeChild("demand");
+			}
+			element.removeChild("list");
+		}
+	}
 }

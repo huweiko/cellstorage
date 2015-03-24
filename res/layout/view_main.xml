@@ -2,29 +2,55 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@drawable/main_background">
+    android:background="@drawable/main_background"
+    android:onClick="view_main">
     <ImageButton 
         android:id="@+id/ImageButtonSetting"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/setting_button"
         android:background="@color/transparent"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="10dp"
+        android:padding="10dp"
         android:onClick="toggleMenu"/>
-    <ListView
-        android:id="@+id/ListViewCell"
+
+    <RelativeLayout
+        android:id="@+id/RelativeLayoutServiceListView"
         android:layout_width="match_parent"
         android:layout_height="180dp" 
         android:layout_marginLeft="40dp"
-        android:layout_marginRight="40dp"
-        android:background="@color/white"
-        android:layout_centerInParent="true"/>
+	    android:layout_marginRight="40dp"
+        android:background="@color/transparent"
+        android:layout_centerInParent="true">
+
+        <ListView
+	        android:id="@+id/ListViewCell"
+	        android:layout_width="match_parent"
+	        android:layout_height="match_parent" 
+	        android:background="@color/theme_green"
+	        android:divider="@drawable/interval_line"/>
+        <ImageView 
+            android:visibility="gone"
+            android:id="@+id/ImageViewScrollArrowUp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="5dp"
+            android:src="@drawable/up_arrow"/>
+        <ImageView 
+            android:id="@+id/ImageViewScrollArrowDown"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="5dp"
+            android:src="@drawable/down_arrow"/>
+    </RelativeLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/ListViewCell"
+        android:layout_below="@+id/RelativeLayoutServiceListView"
         android:layout_marginLeft="30dp"
         android:layout_marginRight="30dp"
         android:layout_marginTop="20dp"
